@@ -1,0 +1,1863 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow-Envision Development Workflow (backup)</title>
+</head>
+<body>
+<!-- Backup of index.html created before redirect -->
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Flow-Envision Development Workflow</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						flow: {
+							DEFAULT: '#000000',
+							light: '#333333'
+						},
+						envision: {
+							DEFAULT: '#4F46E5',
+							light: '#6366F1'
+						}
+					}
+				}
+			}
+		}
+	</script>
+	<style>
+		:root {
+			--primary-color: #000000;
+			--accent-color: #4F46E5;
+			--bg-color: #f8f9fa;
+			--text-color: #333;
+			--border-color: #e0e0e0;
+			--white: #ffffff;
+			--shadow: 0 4px 6px rgba(0,0,0,0.1);
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Flow-Envision Development Workflow</title>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script>
+				tailwind.config = {
+					theme: {
+						extend: {
+							colors: {
+								flow: {
+									DEFAULT: '#000000',
+									light: '#333333'
+								},
+								envision: {
+									DEFAULT: '#4F46E5',
+									light: '#6366F1'
+								}
+							}
+						}
+					}
+				}
+			</script>
+			<style>
+				:root {
+					--primary-color: #000000;
+					--accent-color: #4F46E5;
+					--bg-color: #f8f9fa;
+					--text-color: #333;
+					--border-color: #e0e0e0;
+					--white: #ffffff;
+					--shadow: 0 4px 6px rgba(0,0,0,0.1);
+				}
+
+				body {
+					background-color: var(--bg-color);
+					color: var(--text-color);
+					font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+				}
+
+				html {
+					scroll-behavior: smooth;
+				}
+
+				::-webkit-scrollbar {
+					width: 8px;
+				}
+				::-webkit-scrollbar-track {
+					background: #f1f1f1;
+				}
+				::-webkit-scrollbar-thumb {
+					background: #888;
+					border-radius: 4px;
+				}
+				::-webkit-scrollbar-thumb:hover {
+					background: #555;
+				}
+
+				/* Org Chart Cards - Centered Design */
+				.org-card {
+					transition: transform 0.2s ease, box-shadow 0.2s ease;
+					text-align: center;
+				}
+				.org-card:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
+				}
+				.org-card .accent-bar {
+					height: 4px;
+					border-radius: 2px 2px 0 0;
+				}
+
+				/* Segmented Control */
+				.segmented-control {
+					display: inline-flex;
+					background: #e5e7eb;
+					border-radius: 8px;
+					padding: 4px;
+				}
+				.segmented-control button {
+					padding: 8px 20px;
+					border-radius: 6px;
+					font-weight: 500;
+					transition: all 0.2s ease;
+					border: none;
+					background: transparent;
+					cursor: pointer;
+				}
+				.segmented-control button.active {
+					background: white;
+					box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+				}
+				.segmented-control button:hover:not(.active) {
+					background: rgba(255,255,255,0.5);
+				}
+
+				/* Mobile Matrix Cards */
+				.matrix-card {
+					transition: all 0.2s ease;
+				}
+				.matrix-card:hover {
+					transform: translateY(-2px);
+					box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+				}
+				.matrix-card.expanded {
+					background: #f9fafb;
+				}
+
+				/* Phase Tabs for Mobile */
+				.phase-tabs {
+					display: flex;
+					overflow-x: auto;
+					-webkit-overflow-scrolling: touch;
+					scrollbar-width: none;
+					gap: 8px;
+					padding-bottom: 8px;
+				}
+				.phase-tabs::-webkit-scrollbar {
+					display: none;
+				}
+				.phase-tab {
+					flex-shrink: 0;
+					padding: 8px 16px;
+					border-radius: 20px;
+					font-size: 14px;
+					font-weight: 500;
+					white-space: nowrap;
+					cursor: pointer;
+					transition: all 0.2s ease;
+					border: 1px solid #e5e7eb;
+					background: white;
+				}
+				.phase-tab.active {
+					background: #000;
+					color: white;
+					border-color: #000;
+				}
+
+				/* Accordion Animation */
+				.accordion-content {
+					max-height: 0;
+					overflow: hidden;
+					transition: max-height 0.3s ease-out;
+				}
+				.accordion-content.open {
+					max-height: 2000px;
+				}
+
+				/* Gallery Cards */
+				.gallery-card {
+					transition: transform 0.2s ease, box-shadow 0.2s ease;
+				}
+				.gallery-card:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
+				}
+
+				/* Print Styles */
+				@media print {
+					.no-print { display: none !important; }
+					body { background: white; }
+					.shadow-lg { box-shadow: none !important; border: 1px solid #ddd; }
+				}
+			</style>
+		</head>
+		<body class="min-h-screen">
+
+			<!-- Navigation -->
+			<nav class="bg-black text-white sticky top-0 z-50 shadow-lg no-print">
+				<div class="max-w-7xl mx-auto px-4">
+					<div class="flex justify-between items-center h-16">
+						<div class="flex items-center space-x-3">
+							<img src="Flow-PNG-logo.png" alt="Flow Logo" class="h-10">
+							<span class="text-xl font-light">×</span>
+							<span class="text-xl font-semibold">Envision</span>
+						</div>
+						<div class="hidden md:flex space-x-6">
+							<a href="#org-chart" class="hover:text-gray-300 transition">Team</a>
+							<a href="#approval-workflow" class="hover:text-gray-300 transition">Workflow</a>
+							<a href="#phase-matrix" class="hover:text-gray-300 transition">Matrix</a>
+							<a href="#deliverables" class="hover:text-gray-300 transition">Deliverables</a>
+						</div>
+					</div>
+				</div>
+			</nav>
+
+			<!-- Hero Section -->
+			<header class="bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white py-16">
+				<div class="max-w-7xl mx-auto px-4 text-center">
+					<h1 class="text-4xl md:text-5xl font-bold mb-4">Development Workflow</h1>
+					<p class="text-xl text-gray-300 max-w-2xl mx-auto">
+						Collaborative framework for real estate development excellence
+					</p>
+				</div>
+			</header>
+
+			<!-- Main Content -->
+			<main class="max-w-7xl mx-auto px-4 py-8 space-y-12">
+
+				<!-- Section 1: Org Chart -->
+				<section id="org-chart" class="bg-white rounded-xl shadow-lg p-8">
+					<h2 class="text-2xl font-bold mb-8 text-center">Organizational Structure</h2>
+
+					<!-- Founder - Top Level -->
+					<div class="flex justify-center mb-8">
+						<div class="org-card bg-white rounded-lg shadow-md p-6 w-72">
+							<div class="accent-bar bg-black w-full mb-4"></div>
+							<div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Founder</div>
+							<div class="text-xl font-bold text-gray-900">Adam Neumann</div>
+							<div class="text-sm text-gray-600 mt-1">Strategic Vision & Capital</div>
+						</div>
+					</div>
+
+					<!-- Connecting Line -->
+					<div class="flex justify-center mb-8">
+						<div class="w-px h-8 bg-gray-300"></div>
+					</div>
+
+					<!-- Executive Team -->
+					<div class="text-center mb-4">
+						<span class="inline-block bg-gray-100 text-gray-700 text-sm font-semibold px-4 py-2 rounded-full">Executive Team</span>
+					</div>
+					<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
+						<div class="org-card bg-white rounded-lg shadow-md p-5">
+							<div class="accent-bar bg-indigo-600 w-full mb-4"></div>
+							<div class="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-1">Co-CEO</div>
+							<div class="text-lg font-bold text-gray-900">Duncan Horst</div>
+							<div class="text-sm text-gray-600 mt-1">Operations & Finance</div>
+						</div>
+						<div class="org-card bg-white rounded-lg shadow-md p-5">
+							<div class="accent-bar bg-indigo-600 w-full mb-4"></div>
+							<div class="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-1">Co-CEO</div>
+							<div class="text-lg font-bold text-gray-900">Stefan Soloviev</div>
+							<div class="text-sm text-gray-600 mt-1">Real Estate Strategy</div>
+						</div>
+						<div class="org-card bg-white rounded-lg shadow-md p-5">
+							<div class="accent-bar bg-indigo-600 w-full mb-4"></div>
+							<div class="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-1">Managing Partner</div>
+							<div class="text-lg font-bold text-gray-900">Tyler Newbold</div>
+							<div class="text-sm text-gray-600 mt-1">Partnership Lead</div>
+						</div>
+					</div>
+
+					<!-- Connecting Line -->
+					<div class="flex justify-center mb-8">
+						<div class="w-px h-8 bg-gray-300"></div>
+					</div>
+
+					<!-- Development Team -->
+					<div class="text-center mb-4">
+						<span class="inline-block bg-gray-100 text-gray-700 text-sm font-semibold px-4 py-2 rounded-full">Development Team</span>
+					</div>
+					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+						<div class="org-card bg-white rounded-lg shadow-md p-4">
+							<div class="accent-bar bg-emerald-500 w-full mb-3"></div>
+							<div class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">VP Development</div>
+							<div class="text-base font-bold text-gray-900">Daniel Ahn</div>
+						</div>
+						<div class="org-card bg-white rounded-lg shadow-md p-4">
+							<div class="accent-bar bg-emerald-500 w-full mb-3"></div>
+							<div class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">Senior PM</div>
+							<div class="text-base font-bold text-gray-900">Avi Reddy</div>
+						</div>
+						<div class="org-card bg-white rounded-lg shadow-md p-4">
+							<div class="accent-bar bg-emerald-500 w-full mb-3"></div>
+							<div class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">PM</div>
+							<div class="text-base font-bold text-gray-900">Jackson Seaberg</div>
+						</div>
+						<div class="org-card bg-white rounded-lg shadow-md p-4">
+							<div class="accent-bar bg-emerald-500 w-full mb-3"></div>
+							<div class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">Analyst</div>
+							<div class="text-base font-bold text-gray-900">Grant Lintner</div>
+						</div>
+					</div>
+
+					<!-- Principles -->
+					<div class="mt-10 pt-8 border-t border-gray-200">
+						<h3 class="text-lg font-semibold text-center mb-6">Key Organizational Principles</h3>
+						<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+							<div class="text-center p-4">
+								<div class="w-12 h-12 bg-black rounded-full flex items-center justify-center mx-auto mb-3">
+									<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+									</svg>
+								</div>
+								<div class="font-semibold text-gray-900">Founder-Led Vision</div>
+								<div class="text-sm text-gray-600 mt-1">Strategic direction from Adam Neumann</div>
+							</div>
+							<div class="text-center p-4">
+								<div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3">
+									<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+									</svg>
+								</div>
+								<div class="font-semibold text-gray-900">Co-CEO Structure</div>
+								<div class="text-sm text-gray-600 mt-1">Balanced leadership expertise</div>
+							</div>
+							<div class="text-center p-4">
+								<div class="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-3">
+									<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+									</svg>
+								</div>
+								<div class="font-semibold text-gray-900">Execution Team</div>
+								<div class="text-sm text-gray-600 mt-1">Dedicated development professionals</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Section 2: Approval Workflow -->
+				<section id="approval-workflow" class="bg-white rounded-xl shadow-lg p-8">
+					<h2 class="text-2xl font-bold mb-6 text-center">Approval Workflow</h2>
+
+					<!-- Toggle -->
+					<div class="flex justify-center mb-8">
+						<div class="segmented-control">
+							<button id="btn-flow" class="active" onclick="toggleGC('flow')">Flow as Developer</button>
+							<button id="btn-envision" onclick="toggleGC('envision')">Envision as GC</button>
+						</div>
+					</div>
+
+					<!-- Workflow Content -->
+					<div id="workflow-content">
+						<!-- Flow as Developer (Default) -->
+						<div id="flow-workflow" class="space-y-4">
+							<div class="flex items-center p-4 bg-gray-50 rounded-lg">
+								<div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
+								<div>
+									<div class="font-semibold">Flow Development Team</div>
+									<div class="text-sm text-gray-600">Initial review and recommendation</div>
+								</div>
+							</div>
+							<div class="flex justify-center"><div class="w-px h-6 bg-gray-300"></div></div>
+							<div class="flex items-center p-4 bg-gray-50 rounded-lg">
+								<div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
+								<div>
+									<div class="font-semibold">Co-CEO Review</div>
+									<div class="text-sm text-gray-600">Duncan Horst & Stefan Soloviev alignment</div>
+								</div>
+							</div>
+							<div class="flex justify-center"><div class="w-px h-6 bg-gray-300"></div></div>
+							<div class="flex items-center p-4 bg-gray-50 rounded-lg">
+								<div class="w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
+								<div>
+									<div class="font-semibold">Final Approval</div>
+									<div class="text-sm text-gray-600">Adam Neumann sign-off on major decisions</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Envision as GC (Hidden by default) -->
+						<div id="envision-workflow" class="space-y-4 hidden">
+							<div class="flex items-center p-4 bg-indigo-50 rounded-lg">
+								<div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
+								<div>
+									<div class="font-semibold">Envision Construction</div>
+									<div class="text-sm text-gray-600">Technical review and cost estimation</div>
+								</div>
+							</div>
+							<div class="flex justify-center"><div class="w-px h-6 bg-indigo-200"></div></div>
+							<div class="flex items-center p-4 bg-indigo-50 rounded-lg">
+								<div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
+								<div>
+									<div class="font-semibold">Joint Review</div>
+									<div class="text-sm text-gray-600">Flow + Envision leadership alignment</div>
+								</div>
+							</div>
+							<div class="flex justify-center"><div class="w-px h-6 bg-indigo-200"></div></div>
+							<div class="flex items-center p-4 bg-indigo-50 rounded-lg">
+								<div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
+								<div>
+									<div class="font-semibold">Flow Final Approval</div>
+									<div class="text-sm text-gray-600">Executive sign-off with Envision execution</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Section 3: Phase Collaboration Matrix -->
+				<section id="phase-matrix" class="bg-white rounded-xl shadow-lg p-8">
+					<h2 class="text-2xl font-bold mb-6 text-center">Phase Collaboration Matrix</h2>
+
+					<!-- Desktop Table -->
+					<div class="hidden md:block overflow-x-auto">
+						<table class="w-full text-sm" id="matrix-table">
+							<thead>
+								<tr class="border-b-2 border-gray-200">
+									<th class="text-left p-3 font-semibold">Responsibility</th>
+									<th class="p-3 text-center font-semibold">Pre-Dev</th>
+									<th class="p-3 text-center font-semibold">Design</th>
+									<th class="p-3 text-center font-semibold">Pre-Con</th>
+									<th class="p-3 text-center font-semibold">Construction</th>
+									<th class="p-3 text-center font-semibold">Close-Out</th>
+								</tr>
+							</thead>
+							<tbody id="matrix-body"></tbody>
+						</table>
+					</div>
+
+					<!-- Mobile Cards -->
+					<div class="md:hidden">
+						<!-- Phase Tabs -->
+						<div class="phase-tabs mb-6 sticky top-16 bg-white pt-2 z-10">
+							<button class="phase-tab active" data-phase="0">Pre-Dev</button>
+							<button class="phase-tab" data-phase="1">Design</button>
+							<button class="phase-tab" data-phase="2">Pre-Con</button>
+							<button class="phase-tab" data-phase="3">Construction</button>
+							<button class="phase-tab" data-phase="4">Close-Out</button>
+						</div>
+						<div id="mobile-matrix"></div>
+					</div>
+
+					<!-- Legend -->
+					<div class="mt-8 pt-6 border-t border-gray-200">
+						<div class="flex flex-wrap justify-center gap-6 text-sm">
+							<div class="flex items-center gap-2">
+								<span class="w-8 h-8 bg-black text-white rounded flex items-center justify-center text-xs font-bold">F</span>
+								<span>Flow Leads</span>
+							</div>
+							<div class="flex items-center gap-2">
+								<span class="w-8 h-8 bg-indigo-600 text-white rounded flex items-center justify-center text-xs font-bold">E</span>
+								<span>Envision Leads</span>
+							</div>
+							<div class="flex items-center gap-2">
+								<span class="w-8 h-8 bg-gradient-to-r from-black to-indigo-600 text-white rounded flex items-center justify-center text-xs font-bold">J</span>
+								<span>Joint</span>
+							</div>
+							<div class="flex items-center gap-2">
+								<span class="w-8 h-8 bg-gray-200 text-gray-600 rounded flex items-center justify-center text-xs font-bold">S</span>
+								<span>Support</span>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Section 4: Deliverables Gallery -->
+				<section id="deliverables" class="bg-white rounded-xl shadow-lg p-8">
+					<h2 class="text-2xl font-bold mb-6 text-center">Phase Deliverables</h2>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="deliverables-grid">
+						<!-- Deliverables will be populated by JavaScript -->
+					</div>
+				</section>
+
+			</main>
+
+			<!-- Footer -->
+			<footer class="bg-black text-white py-8 mt-12">
+				<div class="max-w-7xl mx-auto px-4 text-center">
+					<div class="flex justify-center items-center space-x-3 mb-4">
+						<img src="Flow-PNG-logo.png" alt="Flow Logo" class="h-8 brightness-0 invert">
+						<span class="text-xl font-light">×</span>
+						<span class="text-xl font-semibold">Envision</span>
+					</div>
+					<p class="text-gray-400 text-sm">Development Workflow Dashboard v5.0</p>
+				</div>
+			</footer>
+
+			<script>
+				// Toggle GC Selection
+				function toggleGC(selection) {
+					const btnFlow = document.getElementById('btn-flow');
+					const btnEnvision = document.getElementById('btn-envision');
+					const flowWorkflow = document.getElementById('flow-workflow');
+					const envisionWorkflow = document.getElementById('envision-workflow');
+
+					if (selection === 'flow') {
+						btnFlow.classList.add('active');
+						btnEnvision.classList.remove('active');
+						flowWorkflow.classList.remove('hidden');
+						envisionWorkflow.classList.add('hidden');
+					} else {
+						btnEnvision.classList.add('active');
+						btnFlow.classList.remove('active');
+						envisionWorkflow.classList.remove('hidden');
+						flowWorkflow.classList.add('hidden');
+					}
+				}
+
+				// Matrix Data
+				const matrixData = [
+					{ responsibility: "Site Selection & Due Diligence", phases: ["F", "S", "S", "-", "-"] },
+					{ responsibility: "Entitlements & Zoning", phases: ["F", "F", "S", "-", "-"] },
+					{ responsibility: "Architect Selection & Management", phases: ["F", "J", "J", "S", "-"] },
+					{ responsibility: "Design Development", phases: ["S", "J", "J", "S", "-"] },
+					{ responsibility: "Budget Development", phases: ["J", "J", "E", "E", "J"] },
+					{ responsibility: "GC Procurement", phases: ["F", "J", "J", "-", "-"] },
+					{ responsibility: "Subcontractor Management", phases: ["-", "S", "E", "E", "E"] },
+					{ responsibility: "Construction Oversight", phases: ["-", "-", "J", "E", "E"] },
+					{ responsibility: "Quality Control", phases: ["-", "-", "J", "E", "E"] },
+					{ responsibility: "Schedule Management", phases: ["F", "J", "J", "E", "E"] },
+					{ responsibility: "Owner Representation", phases: ["F", "F", "F", "F", "F"] },
+					{ responsibility: "Financial Reporting", phases: ["F", "F", "J", "J", "F"] },
+					{ responsibility: "Closeout & Turnover", phases: ["-", "-", "-", "J", "J"] }
+				];
+
+				const phaseNames = ["Pre-Dev", "Design", "Pre-Con", "Construction", "Close-Out"];
+
+				// Render Desktop Matrix
+				function renderDesktopMatrix() {
+					const tbody = document.getElementById('matrix-body');
+					tbody.innerHTML = matrixData.map(row => `
+						<tr class="border-b border-gray-100 hover:bg-gray-50">
+							<td class="p-3 font-medium">${row.responsibility}</td>
+							${row.phases.map(phase => `
+								<td class="p-3 text-center">
+									${getCellBadge(phase)}
+								</td>
+							`).join('')}
+						</tr>
+					`).join('');
+				}
+
+				// Render Mobile Matrix
+				function renderMobileMatrix(phaseIndex = 0) {
+					const container = document.getElementById('mobile-matrix');
+					const filtered = matrixData.filter(row => row.phases[phaseIndex] !== '-');
+
+					container.innerHTML = filtered.map(row => `
+						<div class="matrix-card bg-white border border-gray-200 rounded-lg p-4 mb-3">
+							<div class="flex justify-between items-center">
+								<span class="font-medium text-gray-900">${row.responsibility}</span>
+								${getCellBadge(row.phases[phaseIndex])}
+							</div>
+						</div>
+					`).join('') || '<p class="text-center text-gray-500 py-8">No responsibilities in this phase</p>';
+				}
+
+				// Get Badge HTML
+				function getCellBadge(value) {
+					const badges = {
+						'F': '<span class="inline-flex items-center justify-center w-8 h-8 bg-black text-white text-xs font-bold rounded">F</span>',
+						'E': '<span class="inline-flex items-center justify-center w-8 h-8 bg-indigo-600 text-white text-xs font-bold rounded">E</span>',
+						'J': '<span class="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-black to-indigo-600 text-white text-xs font-bold rounded">J</span>',
+						'S': '<span class="inline-flex items-center justify-center w-8 h-8 bg-gray-200 text-gray-600 text-xs font-bold rounded">S</span>',
+						'-': '<span class="text-gray-300">—</span>'
+					};
+					return badges[value] || badges['-'];
+				}
+
+				// Phase Tab Handling
+				document.querySelectorAll('.phase-tab').forEach(tab => {
+					tab.addEventListener('click', function() {
+						document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+						this.classList.add('active');
+						renderMobileMatrix(parseInt(this.dataset.phase));
+					});
+				});
+
+				// Deliverables Data
+				const deliverables = [
+					{
+						phase: "Pre-Development",
+						color: "bg-gray-800",
+						items: ["Market Analysis", "Site Assessment", "Zoning Review", "Pro Forma Model", "LOI / PSA"]
+					},
+					{
+						phase: "Design",
+						color: "bg-indigo-600",
+						items: ["Schematic Design", "Design Development", "MEP Coordination", "Permit Drawings", "Spec Book"]
+					},
+					{
+						phase: "Pre-Construction",
+						color: "bg-emerald-600",
+						items: ["GMP Budget", "Subcontractor Bids", "Value Engineering", "Construction Schedule", "Permits"]
+					},
+					{
+						phase: "Construction",
+						color: "bg-amber-600",
+						items: ["Weekly Reports", "Pay Applications", "RFI Log", "Change Orders", "Quality Reports"]
+					},
+					{
+						phase: "Close-Out",
+						color: "bg-purple-600",
+						items: ["Punch List", "As-Builts", "O&M Manuals", "Warranties", "Final Accounting"]
+					}
+				];
+
+				// Render Deliverables
+				function renderDeliverables() {
+					const grid = document.getElementById('deliverables-grid');
+					grid.innerHTML = deliverables.map(phase => `
+						<div class="gallery-card bg-white border border-gray-200 rounded-lg overflow-hidden">
+							<div class="${phase.color} text-white p-4">
+								<h3 class="font-bold text-lg">${phase.phase}</h3>
+							</div>
+							<ul class="p-4 space-y-2">
+								${phase.items.map(item => `
+									<li class="flex items-center text-sm text-gray-700">
+										<svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+										</svg>
+										${item}
+									</li>
+								`).join('')}
+							</ul>
+						</div>
+					`).join('');
+				}
+
+				// Initialize
+				document.addEventListener('DOMContentLoaded', function() {
+					renderDesktopMatrix();
+					renderMobileMatrix(0);
+					renderDeliverables();
+				});
+			</script>
+		</body>
+		</html>
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "ENT-05",
+"taskName": "Applications filing & municipal review coordination",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "ENT-06",
+"taskName": "Utility service agreements & will-serve letters",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Conceptual Studies & Feasibility",
+"tasks": [
+{
+"id": "CON-01",
+"taskName": "Generative Test-Fit & Massing analysis of site",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "CON-02",
+"taskName": "Labor Market Research; Coordination via Cost Consultants",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "CON-03",
+"taskName": "ROM Budget / Conceptual Estimate",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": null,
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "CON-04",
+"taskName": "Conceptual Visualizations & 3D Renderings",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"construction": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"occupancy": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }
+}
+},
+{
+"id": "CON-05",
+"taskName": "Confirm Financial Feasibility; Secure Funding Arrangements",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }
+}
+}
+]
+},
+{
+"category": "Design Coordination",
+"tasks": [
+{
+"id": "DES-01",
+"taskName": "Design Approvals & Owner review coordination",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-02",
+"taskName": "Coordinate with Architectural & Engineering firms (SD/DD)",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-03",
+"taskName": "Constructability & Sustainability reviews (SD/DD/CD)",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }
+}
+},
+{
+"id": "DES-04",
+"taskName": "Target Value Design / Continuous Value Management",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-05",
+"taskName": "Preconstruction Conferences",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-06",
+"taskName": "Detailed Estimate (SD/DD)",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-07",
+"taskName": "Submittals",
+"phases": {
+"conceptual": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-08",
+"taskName": "Approvals timing; Compliance Tracking",
+"phases": {
+"conceptual": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-09",
+"taskName": "Establish Target GMP Estimate for Cost of Work (CD)",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-10",
+"taskName": "Cost model, Trend log & Budget updates",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "DES-11",
+"taskName": "Preliminary Digital Twin for AR/VR collaboration",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Schedule",
+"tasks": [
+{
+"id": "SCH-01",
+"taskName": "Creation of Work Breakdown Schedule",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "SCH-02",
+"taskName": "Procurement Coordination; Long-Lead Items",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "SCH-03",
+"taskName": "4D schedule simulation of construction sequencing of site logistics and material movement",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "SCH-04",
+"taskName": "Federated model coordination and early clash detection",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": null,
+"occupancy": null,
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Procurement",
+"tasks": [
+{
+"id": "PRO-01",
+"taskName": "Master Procurement Plan; Responsibility Assignment",
+"phases": {
+"conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "PRO-02",
+"taskName": "Agreements List; Agreement Development",
+"phases": {
+"conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "PRO-03",
+"taskName": "Scope/Bid Packaging; Bidding Documentation",
+"phases": {
+"conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "PRO-04",
+"taskName": "Prequalification; Compliance Review",
+"phases": {
+"conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "PRO-05",
+"taskName": "EEO/MBE/WBE Coordination",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "PRO-06",
+"taskName": "Bid Evaluation & Execution",
+"phases": {
+"conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }
+}
+},
+{
+"id": "PRO-07",
+"taskName": "Contract Issuance - GMP proposal and Exhibits",
+"phases": {
+"conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Insurance & Risk",
+"tasks": [
+{
+"id": "INS-01",
+"taskName": "Analyze Insurance/Bonding Requirements; Need for Insurance Consultants",
+"phases": {
+"conceptual": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }
+}
+},
+{
+"id": "INS-02",
+"taskName": "Insurance Certificates; Tracking",
+"phases": {
+"conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Project Controls",
+"tasks": [
+{
+"id": "CTL-01",
+"taskName": "Project Accounting",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "CTL-02",
+"taskName": "Cost Code/WBS & Control budget Baseline",
+"phases": {
+"conceptual": null,
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "CTL-03",
+"taskName": "Cash Flow Forecasting (Draw Package Coordination)",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"construction": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"occupancy": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }
+}
+},
+{
+"id": "CTL-04",
+"taskName": "Budget Needs/Constraints",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }
+}
+},
+{
+"id": "CTL-05",
+"taskName": "Cost Allowance/Contingency Audits",
+"phases": {
+"conceptual": null,
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"facilities": null
+}
+},
+{
+"id": "CTL-06",
+"taskName": "Progress Payment Reviews; Recommendations",
+"phases": {
+"conceptual": null,
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"facilities": null
+}
+},
+{
+"id": "CTL-07",
+"taskName": "Progress Payment Approvals",
+"phases": {
+"conceptual": null,
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"facilities": null
+}
+},
+{
+"id": "CTL-08",
+"taskName": "Claims Resolution",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"construction": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"occupancy": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" },
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Construction Oversight",
+"tasks": [
+{
+"id": "OVR-01",
+"taskName": "Kickoff/partnering & OAC meetings",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"facilities": null
+}
+},
+{
+"id": "OVR-02",
+"taskName": "Submittals & RFIs",
+"phases": {
+"conceptual": null,
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "OVR-03",
+"taskName": "Site Logistics oversight & Mitigation of Impact",
+"phases": {
+"conceptual": null,
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "OVR-04",
+"taskName": "Schedule Monitoring/Recovery",
+"phases": {
+"conceptual": null,
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "OVR-05",
+"taskName": "Change Order Evaluation & Recommendation",
+"phases": {
+"conceptual": null,
+"design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" },
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Quality & Safety",
+"tasks": [
+{
+"id": "QAS-01",
+"taskName": "Approval Monitoring",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "QAS-02",
+"taskName": "Materials Testing",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "QAS-03",
+"taskName": "Operations Training",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "QAS-04",
+"taskName": "Performance Compliance",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "QAS-05",
+"taskName": "Safety Implementation; Safety Plans; Safety Recognition; Safety Responsibilities",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": null,
+"facilities": null
+}
+},
+{
+"id": "QAS-06",
+"taskName": "Systems Handover",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "QAS-07",
+"taskName": "TQM Guidelines",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "QAS-08",
+"taskName": "Startup/Testing/Balancing",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "QAS-09",
+"taskName": "Work Correction",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Closeout",
+"tasks": [
+{
+"id": "CLO-01",
+"taskName": "As-Builts",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": null,
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "CLO-02",
+"taskName": "TCO/CO Path & Tracking Inspections",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": null,
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "CLO-03",
+"taskName": "Substantial Completion",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": null,
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "CLO-04",
+"taskName": "Final Completion",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": null,
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "CLO-05",
+"taskName": "O&M Manuals",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": null,
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+},
+{
+"id": "CLO-06",
+"taskName": "Warranty management & Claims coordination",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": null,
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": null
+}
+}
+]
+},
+{
+"category": "Facilities Management",
+"tasks": [
+{
+"id": "FAC-01",
+"taskName": "Emergency Response Planning",
+"phases": {
+"conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" },
+"design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }
+}
+},
+{
+"id": "FAC-02",
+"taskName": "CAFM Systems",
+"phases": {
+"conceptual": null,
+"design": null,
+"construction": null,
+"occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" },
+"facilities": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }
+}
+}
+]
+}
+];
+
+function renderMatrix() {
+const container = document.getElementById('matrix-container');
+let html = `
+<table class="min-w-full divide-y divide-gray-200">
+<thead class="bg-gray-100">
+<tr>
+<th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/4 sticky left-0 bg-gray-100 z-10 border-r border-gray-200">Task / Activity</th>
+<th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Conceptual</th>
+<th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Design</th>
+<th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Construction</th>
+<th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Occupancy</th>
+<th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Facilities</th>
+</tr>
+</thead>
+<tbody class="bg-white divide-y divide-gray-100">
+`;
+
+projectResponsibilityData.forEach((group, index) => {
+// Group Header
+html += `
+<tr class="matrix-header bg-gray-50" onclick="toggleMatrixGroup('${index}')">
+<td colspan="6" class="px-4 py-3 text-sm font-bold text-gray-800 flex items-center">
+<span id="icon-${index}" class="mr-2 transform transition-transform">▼</span>
+${group.category}
+</td>
+</tr>
+`;
+
+// Items
+group.tasks.forEach(item => {
+html += `
+<tr class="matrix-row group-${index} transition-all duration-200">
+<td class="px-4 py-3 text-sm font-medium text-gray-900 border-r border-gray-100 sticky left-0 bg-white">
+<span class="text-xs text-gray-400 block mb-1">${item.id}</span>
+${item.taskName}
+</td>
+${renderCell(item.phases.conceptual)}
+${renderCell(item.phases.design)}
+${renderCell(item.phases.construction)}
+${renderCell(item.phases.occupancy)}
+${renderCell(item.phases.facilities)}
+</tr>
+`;
+});
+});
+
+html += `</tbody></table>`;
+container.innerHTML = html;
+}
+
+function renderCell(phaseData) {
+if (!phaseData) {
+return `<td class="matrix-cell bg-gray-50"><div class="status-badge status-inactive">-</div></td>`;
+}
+
+let variant = '';
+let label = '';
+
+switch(phaseData.code) {
+case 'DM/D':
+variant = 'primary-envision';
+label = 'Envision Develops';
+break;
+case 'DM/M':
+variant = 'oversight-envision';
+label = 'Envision Monitors';
+break;
+case 'O/D':
+variant = 'primary-flow';
+label = 'Flow Develops';
+break;
+case 'O/M':
+variant = 'oversight-flow';
+label = 'Flow Monitors';
+break;
+default:
+variant = 'inactive';
+label = phaseData.code;
+}
+
+return `
+<td class="matrix-cell">
+<div class="status-badge status-${variant}">
+${label}
+<span class="text-[10px] opacity-75">(${phaseData.code})</span>
+</div>
+</td>
+`;
+}
+
+function toggleMatrixGroup(index) {
+const rows = document.querySelectorAll(`.group-${index}`);
+const icon = document.getElementById(`icon-${index}`);
+
+let isHidden = rows[0].classList.contains('hidden');
+
+rows.forEach(row => {
+if (isHidden) {
+row.classList.remove('hidden');
+icon.style.transform = 'rotate(0deg)';
+} else {
+row.classList.add('hidden');
+icon.style.transform = 'rotate(-90deg)';
+}
+});
+}
+
+// --- Logic for Approval Toggle ---
+const gcToggle = document.getElementById('gcToggle');
+const optNo = document.getElementById('opt-no');
+const optYes = document.getElementById('opt-yes');
+const workflowContent = document.getElementById('workflowContent');
+
+// Initial State Check
+function updateToggleState() {
+if(gcToggle.checked) {
+// Yes State
+optYes.classList.add('text-black', 'font-bold');
+optYes.classList.remove('text-gray-500');
+optNo.classList.remove('text-black', 'font-bold');
+optNo.classList.add('text-gray-500');
+
+workflowContent.innerHTML = `
+<div class="animate-fade-in">
+<h3 class="text-xl font-bold mb-3 text-black">Scenario: Envision Construction performs as GC/HC</h3>
+<p class="text-gray-700 font-medium mb-3">Direct field operations, trade management, safety, schedule, and quality control.</p>
+<p class="text-gray-600 text-sm leading-relaxed">In this scenario, Envision Construction takes on the risk and responsibility of the General Contractor. They directly hire subcontractors and manage day-to-day site logistics.</p>
+</div>
+`;
+} else {
+// No State
+optNo.classList.add('text-black', 'font-bold');
+optNo.classList.remove('text-gray-500');
+optYes.classList.remove('text-black', 'font-bold');
+optYes.classList.add('text-gray-500');
+
+workflowContent.innerHTML = `
+<div class="animate-fade-in">
+<h3 class="text-xl font-bold mb-3 text-black">Scenario: Envision Construction manages third-party GC</h3>
+<p class="text-gray-700 leading-relaxed">Envision Construction acts purely as the Development Manager. They oversee the hiring and performance of an external General Contractor. Focus is on high-level schedule, budget adherence, and quality assurance.</p>
+</div>
+`;
+}
+}
+
+gcToggle.addEventListener('change', updateToggleState);
+
+// Allow clicking labels to toggle
+optNo.addEventListener('click', () => { gcToggle.checked = false; updateToggleState(); });
+optYes.addEventListener('click', () => { gcToggle.checked = true; updateToggleState(); });
+
+// Initialize toggle
+updateToggleState();
+
+
+// --- Logic for Phase Carousel ---
+const phases = [
+{
+title: "1. CONCEPTUAL PHASE",
+desc: "Focuses on defining the project vision and feasibility. This involves initial site evaluation, massing studies, and defining the Owner's development goals to determine if the project is viable before major investment.",
+icon: `<svg class="w-12 h-12 text-black mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>`
+},
+{
+title: "2. DESIGN PHASE",
+desc: "Moves from Schematic Design to detailed Construction Documents. Key activities include coordinating with architects/engineers, refining specifications, performing constructability reviews, and locking in the Guaranteed Maximum Price (GMP) budget.",
+icon: `<svg class="w-12 h-12 text-black mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 011-1V4z"></path></svg>`
+},
+{
+title: "3. CONSTRUCTION PHASE",
+desc: "The active building stage starting with the Notice to Proceed. This phase covers physical execution, including site logistics, trade management, safety oversight, and schedule adherence to deliver the built asset.",
+icon: `<svg class="w-12 h-12 text-black mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>`
+},
+{
+title: "4. OCCUPANCY PHASE",
+desc: "Occurs when the building is sufficiently complete for use (Substantial Completion). Activities include securing Certificates of Occupancy (TCO/CO), systems commissioning, and transitioning control to the Owner.",
+icon: `<svg class="w-12 h-12 text-black mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 19.336 9.5 21.336 7.5 19.336 5.5 21.336 3.5 19.336l4.743-4.743A6 6 0 1121 9z"></path></svg>`
+},
+{
+title: "5. FACILITIES MANAGEMENT PHASE",
+desc: "The long-term operational phase post-handover. This encompasses plant operations, preventive maintenance, security, and housekeeping to ensure the asset performs optimally for its residents and users.",
+icon: `<svg class="w-12 h-12 text-black mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>`
+}
+];
+
+let currentPhaseIndex = 0;
+const phaseDisplay = document.getElementById('phaseDisplay');
+const phaseIndicators = document.getElementById('phaseIndicators');
+
+function updatePhase() {
+// Fade out
+phaseDisplay.classList.add('fade-out');
+phaseDisplay.classList.remove('fade-in');
+
+setTimeout(() => {
+phaseDisplay.innerHTML = `
+${phases[currentPhaseIndex].icon}
+<h2 class="text-3xl font-bold mb-4 text-black">${phases[currentPhaseIndex].title}</h2>
+<p class="text-lg text-gray-700 max-w-lg">${phases[currentPhaseIndex].desc}</p>
+`;
+// Fade in
+phaseDisplay.classList.remove('fade-out');
+phaseDisplay.classList.add('fade-in');
+}, 300);
+
+// Update indicators
+phaseIndicators.innerHTML = phases.map((_, idx) => `
+<div class="h-2 w-2 rounded-full transition-colors duration-300 ${idx === currentPhaseIndex ? 'bg-black' : 'bg-gray-300'}"></div>
+`).join('');
+}
+
+function nextPhase() {
+currentPhaseIndex = (currentPhaseIndex + 1) % phases.length;
+updatePhase();
+}
+
+function prevPhase() {
+currentPhaseIndex = (currentPhaseIndex - 1 + phases.length) % phases.length;
+updatePhase();
+}
+
+// --- Deliverables Gallery Logic ---
+const deliverablesGallery = [
+{
+"id": "DEL-001",
+"title": "Project Success Criteria & KPIs",
+"phase": "Due Diligence",
+"category": "Authority & Owner Readiness",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Completed"
+},
+{
+"id": "DEL-002",
+"title": "Procore Implementation Plan",
+"phase": "Due Diligence",
+"category": "Systems Integration",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "In Progress"
+},
+{
+"id": "DEL-003",
+"title": "LiDAR Drone Mapping & Imagery",
+"phase": "Due Diligence",
+"category": "Site Analytics",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Pending"
+},
+{
+"id": "DEL-004",
+"title": "Geotech & Environmental Reports (Phase I/II)",
+"phase": "Due Diligence",
+"category": "Site Analytics",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Pending"
+},
+{
+"id": "DEL-005",
+"title": "ALTA Survey & Title Review",
+"phase": "Due Diligence",
+"category": "Site Analytics",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Pending"
+},
+{
+"id": "DEL-006",
+"title": "Site Utility Analysis & Capacity Study",
+"phase": "Due Diligence",
+"category": "Site Analytics",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Pending"
+},
+{
+"id": "DEL-007",
+"title": "Permit Strategy & Intake Checklist",
+"phase": "Due Diligence",
+"category": "Entitlements",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Pending"
+},
+{
+"id": "DEL-008",
+"title": "Generative Test-Fit & Massing Analysis",
+"phase": "Due Diligence",
+"category": "Feasibility",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Pending"
+},
+{
+"id": "DEL-009",
+"title": "ROM Budget / Conceptual Estimate",
+"phase": "Due Diligence",
+"category": "Feasibility",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "In Progress"
+},
+{
+"id": "DEL-010",
+"title": "Conceptual Visualizations & 3D Renderings",
+"phase": "Due Diligence",
+"category": "Feasibility",
+"producer": "Flow (Owner)",
+"approver": "Envision Construction",
+"status": "Pending"
+},
+{
+"id": "DEL-011",
+"title": "Land Use & Zoning Analysis",
+"phase": "Design",
+"category": "Entitlements",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-012",
+"title": "Constructability & Sustainability Report",
+"phase": "Design",
+"category": "Design Coordination",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-013",
+"title": "Detailed Cost Estimate (SD/DD)",
+"phase": "Design",
+"category": "Design Coordination",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-014",
+"title": "Target GMP Estimate",
+"phase": "Design",
+"category": "Design Coordination",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-015",
+"title": "BIM / Digital Twin Model",
+"phase": "Design",
+"category": "Design Coordination",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-016",
+"title": "4D Schedule Simulation",
+"phase": "Design",
+"category": "Schedule",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-017",
+"title": "Master Procurement Plan",
+"phase": "Design",
+"category": "Procurement",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-018",
+"title": "Bid Packages & Scope Documentation",
+"phase": "Design",
+"category": "Procurement",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-019",
+"title": "GMP Proposal & Exhibits",
+"phase": "Design",
+"category": "Procurement",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Scheduled"
+},
+{
+"id": "DEL-020",
+"title": "Monthly Progress Payment Application",
+"phase": "Execution",
+"category": "Project Controls",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Recurring"
+},
+{
+"id": "DEL-021",
+"title": "Change Order Recommendations",
+"phase": "Execution",
+"category": "Construction Oversight",
+"producer": "Envision Construction",
+"approver": "Flow (Owner)",
+"status": "Recurring"
+}
+];
+
+function renderDeliverables() {
+const container = document.getElementById('deliverables-grid');
+let html = '';
+
+const statusColors = {
+'Completed': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+'In Progress': 'bg-blue-100 text-blue-800 border-blue-200',
+'Pending': 'bg-gray-100 text-gray-600 border-gray-200',
+'Scheduled': 'bg-purple-100 text-purple-800 border-purple-200',
+'Recurring': 'bg-indigo-100 text-indigo-800 border-indigo-200'
+};
+
+deliverablesGallery.forEach(del => {
+const statusClass = statusColors[del.status] || 'bg-gray-100 text-gray-800';
+
+html += `
+<div class="del-card flex flex-col h-full bg-white border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-shadow duration-300">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-bold tracking-wider text-gray-400 uppercase">${del.id}</span>
+<span class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide border ${statusClass}">
+${del.status}
+</span>
+</div>
+
+<div class="mb-4 flex-grow">
+<span class="text-xs font-semibold tracking-wide text-blue-600 uppercase block mb-1">${del.phase}</span>
+<h4 class="text-lg font-bold text-gray-900 leading-tight">${del.title}</h4>
+<span class="text-xs text-gray-500 mt-1 block">${del.category}</span>
+</div>
+
+<div class="pt-4 border-t border-gray-100 text-sm space-y-1.5">
+<div class="flex justify-between">
+<span class="text-gray-500 text-xs">Producer</span>
+<span class="font-semibold text-gray-900 text-right text-xs truncate max-w-[120px]" title="${del.producer}">${del.producer}</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500 text-xs">Approver</span>
+<span class="font-semibold text-gray-900 text-right text-xs truncate max-w-[120px]" title="${del.approver}">${del.approver}</span>
+</div>
+</div>
+</div>
+`;
+});
+
+container.innerHTML = html;
+}
+
+// Initialize Phase Carousel, Matrix & Deliverables
+updatePhase();
+renderMatrix();
+renderDeliverables();
+
+// Mobile menu toggle
+const btn = document.querySelector('button.mobile-menu-btn');
+const menu = document.getElementById('mobile-menu');
+
+btn.addEventListener('click', () => {
+menu.classList.toggle('hidden');
+});
+
+</script>
+</body>
+</html>
