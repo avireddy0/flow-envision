@@ -52,6 +52,14 @@ transform: translateY(-2px);
 box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+/* Special Leadership Card */
+.leadership-card {
+border-left: 4px solid #000;
+background: linear-gradient(to right, #ffffff, #f9fafb);
+border: 1px solid #e5e7eb;
+border-left-width: 6px;
+}
+
 /* Toggle Switch */
 .toggle-switch {
 position: relative;
@@ -212,8 +220,31 @@ font-weight: normal;
 <p class="text-lg text-gray-600">Key stakeholders and roles for project execution.</p>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-<!-- Leadership & Development -->
+<!-- Level 1: Founder -->
+<div class="flex justify-center mb-12">
+<div class="leadership-card w-full max-w-lg p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow bg-white">
+<div class="flex justify-between items-start mb-3">
+<h4 class="text-2xl font-bold text-black">Adam Neumann</h4>
+<span class="text-xs font-semibold bg-black text-white px-3 py-1 rounded-full">Founder</span>
+</div>
+<p class="text-base font-semibold text-gray-700 mb-2">Visionary & Founder</p>
+<p class="text-sm text-gray-600 leading-relaxed">Driving the overarching mission to transform the residential living experience, embedding community and connection into every development.</p>
+</div>
+</div>
+
+<!-- Divider -->
+<div class="relative mb-10">
+<div class="absolute inset-0 flex items-center" aria-hidden="true">
+<div class="w-full border-t border-gray-200"></div>
+</div>
+<div class="relative flex justify-center">
+<span class="px-4 py-1 bg-white text-sm font-bold tracking-wider uppercase text-gray-500 border border-gray-200 rounded-full">Executive Team</span>
+</div>
+</div>
+
+<!-- Level 2: Executive Team -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Javier -->
 <div class="org-card bg-gray-50 p-5 rounded-lg">
 <div class="flex justify-between items-start mb-2">
 <h4 class="text-lg font-bold text-black">Javier Barrios</h4>
@@ -223,15 +254,17 @@ font-weight: normal;
 <p class="text-sm text-gray-600">Executive leadership driving development strategy, master planning, and portfolio phasing.</p>
 </div>
 
+<!-- Deepak -->
 <div class="org-card bg-gray-50 p-5 rounded-lg">
 <div class="flex justify-between items-start mb-2">
-<h4 class="text-lg font-bold text-black">Tom Callagee</h4>
+<h4 class="text-lg font-bold text-black">Deepak D. Prabakaran</h4>
 <span class="text-xs font-semibold bg-black text-white px-2 py-1 rounded">Flow</span>
 </div>
-<p class="text-sm font-semibold text-gray-700 mb-2">Real Estate Investments</p>
-<p class="text-sm text-gray-600">Investments, underwriting, asset management and capital stakeholder management.</p>
+<p class="text-sm font-semibold text-gray-700 mb-2">Head of Design (Transitioning)</p>
+<p class="text-sm text-gray-600">Founder ADDP; External architect & design/engineering lead working closely with Development.</p>
 </div>
 
+<!-- Mickey -->
 <div class="org-card bg-gray-50 p-5 rounded-lg">
 <div class="flex justify-between items-start mb-2">
 <h4 class="text-lg font-bold text-black">Mickey Swisa</h4>
@@ -241,6 +274,40 @@ font-weight: normal;
 <p class="text-sm text-gray-600">Owner-side construction advisor; precon & constructibility interface.</p>
 </div>
 
+<!-- Jeffrey -->
+<div class="org-card bg-gray-50 p-5 rounded-lg border-l-4 border-blue-600" style="border-left-color: #007bff;">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-black">Jeffrey Davis</h4>
+<span class="text-xs font-semibold bg-blue-600 text-white px-2 py-1 rounded">Bear Dev</span>
+</div>
+<p class="text-sm font-semibold text-gray-700 mb-2">Principal / External Consultant</p>
+<p class="text-sm text-gray-600">Co-invested deal partner and consultant. Advising on strategic execution.</p>
+</div>
+</div>
+
+<!-- Divider -->
+<div class="relative mb-10">
+<div class="absolute inset-0 flex items-center" aria-hidden="true">
+<div class="w-full border-t border-gray-200"></div>
+</div>
+<div class="relative flex justify-center">
+<span class="px-4 py-1 bg-white text-sm font-bold tracking-wider uppercase text-gray-500 border border-gray-200 rounded-full">Development Team</span>
+</div>
+</div>
+
+<!-- Level 3: Development Team -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+<!-- Tom -->
+<div class="org-card bg-gray-50 p-5 rounded-lg">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-black">Tom Callagee</h4>
+<span class="text-xs font-semibold bg-black text-white px-2 py-1 rounded">Flow</span>
+</div>
+<p class="text-sm font-semibold text-gray-700 mb-2">Real Estate Investments</p>
+<p class="text-sm text-gray-600">Investments, underwriting, asset management and capital stakeholder management.</p>
+</div>
+
+<!-- Laura -->
 <div class="org-card bg-gray-50 p-5 rounded-lg">
 <div class="flex justify-between items-start mb-2">
 <h4 class="text-lg font-bold text-black">Laura Christovich</h4>
@@ -250,6 +317,7 @@ font-weight: normal;
 <p class="text-sm text-gray-600">Owner-side design lead: Product & Architecture.</p>
 </div>
 
+<!-- Guillaume -->
 <div class="org-card bg-gray-50 p-5 rounded-lg">
 <div class="flex justify-between items-start mb-2">
 <h4 class="text-lg font-bold text-black">Guillaume Donon</h4>
@@ -259,16 +327,7 @@ font-weight: normal;
 <p class="text-sm text-gray-600">Property-level accounting and internal controller at the development level.</p>
 </div>
 
-<div class="org-card bg-gray-50 p-5 rounded-lg">
-<div class="flex justify-between items-start mb-2">
-<h4 class="text-lg font-bold text-black">Deepak D. Prabakaran</h4>
-<span class="text-xs font-semibold bg-black text-white px-2 py-1 rounded">Flow</span>
-</div>
-<p class="text-sm font-semibold text-gray-700 mb-2">Head of Design (Transitioning)</p>
-<p class="text-sm text-gray-600">Founder ADDP; External architect & design/engineering lead.</p>
-</div>
-
-<!-- Execution & Partners -->
+<!-- Ben -->
 <div class="org-card bg-gray-50 p-5 rounded-lg">
 <div class="flex justify-between items-start mb-2">
 <h4 class="text-lg font-bold text-black">Ben Feldman</h4>
@@ -278,15 +337,7 @@ font-weight: normal;
 <p class="text-sm text-gray-600">Main Point of Contact for Envision Construction Project Executive.</p>
 </div>
 
-<div class="org-card bg-gray-50 p-5 rounded-lg border-l-4 border-blue-600" style="border-left-color: #007bff;">
-<div class="flex justify-between items-start mb-2">
-<h4 class="text-lg font-bold text-black">Jeffrey Davis</h4>
-<span class="text-xs font-semibold bg-blue-600 text-white px-2 py-1 rounded">Bear Dev</span>
-</div>
-<p class="text-sm font-semibold text-gray-700 mb-2">Principal / External Consultant</p>
-<p class="text-sm text-gray-600">Co-invested deal partner and consultant.</p>
-</div>
-
+<!-- Envision -->
 <div class="org-card bg-gray-50 p-5 rounded-lg border-l-4 border-green-600" style="border-left-color: #10b981;">
 <div class="flex justify-between items-start mb-2">
 <h4 class="text-lg font-bold text-black">Envision Construction</h4>
@@ -299,9 +350,10 @@ font-weight: normal;
 
 <h3 class="text-xl font-bold mb-4">Key Organizational Principles</h3>
 <ul class="space-y-3">
-<li class="flex items-start"><span class="text-green-600 font-bold mr-3 mt-0.5">✓</span> <span><strong>Javier Barrios</strong> leads development strategy and master planning for Flow.</span></li>
+<li class="flex items-start"><span class="text-green-600 font-bold mr-3 mt-0.5">✓</span> <span><strong>Adam Neumann</strong> provides the visionary direction and community ethos.</span></li>
+<li class="flex items-start"><span class="text-green-600 font-bold mr-3 mt-0.5">✓</span> <span><strong>Javier Barrios</strong> executes development strategy and master planning.</span></li>
+<li class="flex items-start"><span class="text-green-600 font-bold mr-3 mt-0.5">✓</span> <span><strong>Deepak Prabakaran</strong> & <strong>Laura Christovich</strong> ensure design and brand compliance.</span></li>
 <li class="flex items-start"><span class="text-green-600 font-bold mr-3 mt-0.5">✓</span> <span><strong>Ben Feldman</strong> serves as the primary Point of Contact for the Envision Construction Project Executive.</span></li>
-<li class="flex items-start"><span class="text-green-600 font-bold mr-3 mt-0.5">✓</span> <span><strong>Laura Christovich</strong> & <strong>Deepak Prabakaran</strong> ensure design and brand compliance.</span></li>
 <li class="flex items-start"><span class="text-green-600 font-bold mr-3 mt-0.5">✓</span> <span><strong>Tom Callagee</strong> leads investment strategy, while <strong>Guillaume Donon</strong> oversees project accounting and controls.</span></li>
 <li class="flex items-start"><span class="text-green-600 font-bold mr-3 mt-0.5">✓</span> <span><strong>Mickey Swisa</strong> acts as the internal advisor on construction and pre-construction issues.</span></li>
 </ul>
@@ -315,7 +367,7 @@ font-weight: normal;
 </div>
 
 <div class="bg-gray-50 p-8 rounded-lg text-center max-w-3xl mx-auto">
-<span class="text-xl font-bold block mb-6">⚙️ Envision Construction as GC?</span>
+<span class="text-xl font-bold block mb-6">Envision Construction as GC?</span>
 
 <div class="flex justify-center items-center gap-4 mb-8">
 <span class="font-medium text-gray-500 cursor-pointer transition-colors" id="opt-no">No</span>
