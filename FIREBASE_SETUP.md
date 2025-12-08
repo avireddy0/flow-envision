@@ -1,9 +1,10 @@
 # Firebase Setup Guide for Flow-Envision
 
 ## Prerequisites
-- Node.js and npm installed
-- Firebase CLI installed (`npm install -g firebase-tools`)
-- A Firebase project created on [Firebase Console](https://console.firebase.google.com)
+- Node.js (v16+) and npm installed
+- `git` available and authenticated to your GitHub account (if using GitHub integration)
+- Firebase CLI installed (globally) or available via `npx` (`npm install -g firebase-tools` or use `npx firebase`) 
+- A Firebase project created on the Firebase Console: https://console.firebase.google.com
 
 ## Setup Steps
 
@@ -49,23 +50,47 @@ firebase init
 ```
 
 ### 4. Deploy to Firebase Hosting
+
+Interactive deploy (local):
+
 ```bash
-# Build and deploy
+# Build (if you have a build step) and deploy interactively
 npm run build
-firebase deploy
+firebase deploy --only hosting --project YOUR_PROJECT_ID
 ```
+
+Non-interactive / CI deploy (recommended for automation):
+
+1. Create a CI token (run on your local machine):
+
+```bash
+npx firebase login:ci
+# copy the token output
+```
+
+2. In your CI environment (GitHub Actions, Railway, etc.) set an environment variable `FIREBASE_TOKEN` to that token.
+
+3. In CI, run:
+
+```bash
+npm ci
+npm run build
+npx firebase deploy --only hosting --project YOUR_PROJECT_ID --token "$FIREBASE_TOKEN"
+```
+
+If you connected Firebase Hosting to GitHub in the Firebase Console, commits to the branch you selected will automatically trigger a Hosting deploy — no local `firebase deploy` required.
 
 ## Project Structure
 ```
 flow-envision/
-├── public/                 # Static files & HTML (deployed to Firebase)
-│   └── index.html         # Main application
-├── firebase-config.js     # Firebase SDK initialization
-├── firebase.json          # Firebase hosting configuration
-├── .env.example           # Environment variables template
-├── .gitignore             # Git ignore rules
-├── package.json           # Dependencies
-└── README.md              # Project documentation
+├── public/                       # Static files & HTML (deployed to Firebase)
+│   └── flow-workflow_V5.html     # Main application page (also index.html may be used)
+├── firebase-config.js            # Firebase SDK initialization (used by client code)
+├── firebase.json                 # Firebase hosting configuration
+├── .env.example                  # Environment variables template
+├── .gitignore                    # Git ignore rules
+├── package.json                  # Dependencies & start scripts
+└── README.md                     # Project documentation
 ```
 
 ## Firebase Services Available
@@ -121,10 +146,10 @@ firebase deploy --force
 Make sure `.env` file is in the root directory and the deployment script loads it properly.
 
 ## Next Steps
-1. Update `public/index.html` to include Firebase SDK initialization
-2. Add authentication flows
-3. Set up Firestore collections and rules
-4. Deploy to Firebase Hosting
+1. Confirm which static entry point you want to serve from `public/` (the repo currently contains `flow-workflow_V5.html`). If you want it served as `/`, rename or copy it to `public/index.html`.
+2. Update `public/*` pages to import `firebase-config.js` where client code needs Firebase services.
+3. Add authentication flows and Firestore rules as required.
+4. Set up CI deploy (recommend using `FIREBASE_TOKEN` in GitHub Actions or equivalent) or enable GitHub integration in the Firebase Console.
 
 ---
-**Last Updated:** December 7, 2025
+**Last Updated:** December 8, 2025
