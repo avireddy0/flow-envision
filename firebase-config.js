@@ -7,13 +7,13 @@ import { getDatabase } from 'firebase/database';
 // Firebase Configuration
 // Replace with your Firebase project credentials
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY || "YOUR_API_KEY",
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN || "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: process.env.FIREBASE_PROJECT_ID || "YOUR_PROJECT_ID",
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "YOUR_SENDER_ID",
-  appId: process.env.FIREBASE_APP_ID || "YOUR_APP_ID",
-  databaseURL: process.env.FIREBASE_DATABASE_URL || "https://YOUR_PROJECT_ID.firebaseio.com"
+  apiKey: process.env.FIREBASE_API_KEY || "AIzaSyCTL6KFc45icS6fuZiQ9XpBpHU8SJbKtOo",
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN || "cash-flow-app-46893.firebaseapp.com",
+  projectId: process.env.FIREBASE_PROJECT_ID || "cash-flow-app-46893",
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "cash-flow-app-46893.appspot.com",
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "941640320942",
+  appId: process.env.FIREBASE_APP_ID || "1:941640320942:web:740e0f2560bbf0d8dfaa3f",
+  databaseURL: process.env.FIREBASE_DATABASE_URL || "https://cash-flow-app-46893.firebaseio.com"
 };
 
 // Initialize Firebase

@@ -78,6 +78,23 @@ npm run build
 npx firebase deploy --only hosting --project YOUR_PROJECT_ID --token "$FIREBASE_TOKEN"
 ```
 
+### GitHub Actions (recommended)
+
+You can automate hosting deploys with GitHub Actions. Add the workflow file at `.github/workflows/firebase-deploy.yml` (this repository includes a ready-to-use workflow).
+
+Required repository secrets:
+- `FIREBASE_TOKEN` — create with `npx firebase login:ci` and paste into the secret.
+- `FIREBASE_PROJECT_ID` — your Firebase project ID.
+
+Add secrets via the GitHub UI (Settings → Secrets → Actions) or with the `gh` CLI:
+
+```bash
+gh secret set FIREBASE_TOKEN --body "<your-token>"
+gh secret set FIREBASE_PROJECT_ID --body "<your-project-id>"
+```
+
+The provided workflow will run on pushes to `main`, install dependencies, run `npm run build` if present, and then run `npx firebase deploy` using those secrets.
+
 If you connected Firebase Hosting to GitHub in the Firebase Console, commits to the branch you selected will automatically trigger a Hosting deploy — no local `firebase deploy` required.
 
 ## Project Structure

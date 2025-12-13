@@ -1,4 +1,1520 @@
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Envision Cash Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // --- CONFIGURATION ---
+        const firebaseConfig = {
+  apiKey: "AIzaSyCTL6KFc45icS6fuZiQ9XpBpHU8SJbKtOo",
+  authDomain: "cash-flow-app-46893.firebaseapp.com",
+  projectId: "cash-flow-app-46893",
+  storageBucket: "cash-flow-app-46893.appspot.com",
+  messagingSenderId: "941640320942",
+  appId: "1:941640320942:web:740e0f2560bbf0d8dfaa3f"
+};
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyvPFMTM_5M2ahhS29Jf8lKZD5Xk6VJ_fv7ihzdKpYnoYfeVJG-qzPEmY6lmoygClfP/exec";
+        // ---------------------
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // State
+        let rawData = [];
+        let weeks = [];
+
+        async function init() {
+            const querySnapshot = await getDocs(collection(db, "CashFlow"));
+            rawData = [];
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Envision Cash Flow</title>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <script type="module">
+                    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+                    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+                    // --- CONFIGURATION ---
+                    const firebaseConfig = {
+              apiKey: "AIzaSyCTL6KFc45icS6fuZiQ9XpBpHU8SJbKtOo",
+              authDomain: "cash-flow-app-46893.firebaseapp.com",
+              projectId: "cash-flow-app-46893",
+              storageBucket: "cash-flow-app-46893.appspot.com",
+              messagingSenderId: "941640320942",
+              appId: "1:941640320942:web:740e0f2560bbf0d8dfaa3f"
+            };
+                    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyvPFMTM_5M2ahhS29Jf8lKZD5Xk6VJ_fv7ihzdKpYnoYfeVJG-qzPEmY6lmoygClfP/exec";
+                    // ---------------------
+
+                    const app = initializeApp(firebaseConfig);
+                    const db = getFirestore(app);
+
+                    // State
+                    let rawData = [];
+                    let weeks = [];
+
+                    async function init() {
+                        const querySnapshot = await getDocs(collection(db, "CashFlow"));
+                        rawData = [];
+                        querySnapshot.forEach((doc) => rawData.push(doc.data()));
+            
+                        // Get unique weeks and sort (ISO date strings sort correctly)
+                        weeks = [...new Set(rawData.map(d => d.Week_Ending))].sort();
+                        renderTable();
+                    }
+
+                    // Calculation Helper
+                    function sum(week, section, cat = null) {
+                        return rawData
+                            .filter(d => d.Week_Ending === week && d.Section === section)
+                            .filter(d => cat ? d.Category === cat : true)
+                            .reduce((acc, curr) => acc + Number(curr.Amount || 0), 0);
+                    }
+
+                    function fmt(num) {
+                        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+                    }
+
+                    function renderTable() {
+                        const tbody = document.getElementById('cf-body');
+                        let html = "";
+
+                        // --- SECTION A: OPERATING ACTIVITIES ---
+                        html += `<tr class="bg-gray-100 font-bold"><td colspan="${weeks.length + 1}" class="p-2 pl-4">CASH FLOWS FROM OPERATING ACTIVITIES</td></tr>`;
+            
+                        // Row 1: Receipts
+                        html += `<tr><td class="p-2 border-b">(+) Project Receipts</td>`;
+                        weeks.forEach(w => html += `<td class="p-2 text-right border-b text-green-600 border-l">${fmt(sum(w, 'Operating', 'Receipts'))}</td>`);
+                        html += `</tr>`;
+
+                        // Row 2: General Requirements / OpEx / Payroll (aggregate)
+                        html += `<tr><td class="p-2 border-b">(-) Gen Reqs & OpEx & Payroll</td>`;
+                        weeks.forEach(w => {
+                            const val = sum(w, 'Operating', 'Gen Req') + sum(w, 'Operating', 'OpEx') + sum(w, 'Operating', 'Payroll');
+                            html += `<td class="p-2 text-right border-b text-red-500 border-l">${fmt(val)}</td>`
+                        });
+                        html += `</tr>`;
+
+                        // Row 3: Quick Pay Outflows (The Project Burn)
+                        html += `<tr><td class="p-2 border-b">(-) Quick Pay Disbursements</td>`;
+                        weeks.forEach(w => html += `<td class="p-2 text-right border-b text-red-500 border-l">${fmt(sum(w, 'Operating', 'Quick Pay Outflow'))}</td>`);
+                        html += `</tr>`;
+
+                        // Net Operating
+                        html += `<tr class="bg-blue-50 font-bold"><td class="p-2 border-b">Net Operating Cash</td>`;
+                        weeks.forEach(w => {
+                            const net = sum(w, 'Operating');
+                            html += `<td class="p-2 text-right border-b border-l ${net < 0 ? 'text-red-600' : 'text-blue-800'}">${fmt(net)}</td>`
+                        });
+                        html += `</tr>`;
+
+                        // --- SECTION B: FINANCING ACTIVITIES ---
+                        html += `<tr class="bg-gray-100 font-bold"><td colspan="${weeks.length + 1}" class="p-2 pl-4 mt-4">CASH FLOWS FROM FINANCING ACTIVITIES</td></tr>`;
+
+                        html += `<tr><td class="p-2 border-b">(+) Financing Inflow (Viva/Notes)</td>`;
+                        weeks.forEach(w => html += `<td class="p-2 text-right border-b text-blue-600 border-l">${fmt(sum(w, 'Financing', 'Inflow'))}</td>`);
+                        html += `</tr>`;
+
+                        html += `<tr><td class="p-2 border-b">(-) Debt Repayment (Viva/Brex)</td>`;
+                        weeks.forEach(w => html += `<td class="p-2 text-right border-b text-red-600 border-l">${fmt(sum(w, 'Financing', 'Outflow'))}</td>`);
+                        html += `</tr>`;
+
+                        // Net Financing
+                        html += `<tr class="bg-blue-50 font-bold"><td class="p-2 border-b">Net Financing Cash</td>`;
+                        weeks.forEach(w => {
+                            const net = sum(w, 'Financing');
+                            html += `<td class="p-2 text-right border-b border-l ${net < 0 ? 'text-red-600' : 'text-blue-800'}">${fmt(net)}</td>`
+                        });
+                        html += `</tr>`;
+
+                        // --- NET CHANGE ---
+                        html += `<tr class="bg-slate-800 text-white font-bold"><td class="p-3">NET CHANGE IN CASH</td>`;
+                        weeks.forEach(w => {
+                            const total = sum(w, 'Operating') + sum(w, 'Financing');
+                            html += `<td class="p-3 text-right border-l border-slate-600">${fmt(total)}</td>`
+                        });
+                        html += `</tr>`;
+
+                        // Render Header
+                        const thead = document.getElementById('cf-head');
+                        let headHtml = `<tr><th class="p-3 text-left w-64 bg-slate-800 text-white sticky left-0">Line Item</th>`;
+                        weeks.forEach(w => headHtml += `<th class="p-3 text-right min-w-[120px] bg-slate-800 text-white border-l border-slate-600">${w}</th>`);
+                        thead.innerHTML = headHtml + `</tr>`;
+            
+                        tbody.innerHTML = html;
+                    }
+
+                    // --- WRITE FUNCTION ---
+                    window.saveForecast = async () => {
+                        const btn = document.getElementById('saveBtn');
+                        btn.innerText = "Saving...";
+            
+                        const payload = {
+                            Entry_ID: "FCST_" + Date.now(),
+                            Week_Ending: document.getElementById('in_date').value,
+                            Section: document.getElementById('in_sec').value,
+                            Category: document.getElementById('in_cat').value,
+                            Detail: document.getElementById('in_det').value,
+                            Amount: document.getElementById('in_amt').value
+                        };
+
+                        // Use no-cors for Google Apps Script POST; response won't be readable.
+                        await fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        btn.innerText = "Saved!";
+                        setTimeout(() => {
+                            btn.innerText = "Save Forecast";
+                            init(); // Refresh data
+                        }, 1500);
+                    }
+
+                    window.onload = init;
+                </script>
+            </head>
+            <body class="bg-slate-50 p-8">
+                <div class="max-w-full mx-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-3xl font-bold text-slate-800">Statement of Cash Flows</h1>
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        }
+        .org-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .leadership-card {
+        border-left: 4px solid #000;
+        background: linear-gradient(to bottom, #ffffff, #f9fafb);
+        border: 1px solid #e5e7eb;
+        border-top-width: 6px; /* Changed to top for centered look */
+        border-left-width: 1px;
+        /* Centering styles added */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        }
+
+        /* Modern Segmented Control */
+        .segmented-control {
+            background: linear-gradient(90deg, #eef2ff 0%, #fff7ed 100%);
+            padding: 6px;
+            border-radius: 9999px;
+            display: inline-flex;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+        }
+        .segmented-control input {
+            display: none;
+        }
+        .segmented-control .option {
+            padding: 10px 22px;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #6b7280;
+            z-index: 10;
+            transition: color 0.18s ease, transform 0.12s ease;
+            position: relative;
+            will-change: transform, color;
+        }
+        .segmented-control .option:hover {
+            color: #111827;
+            transform: translateY(-1px);
+        }
+        .segmented-control .selection-bg {
+            position: absolute;
+            /* size and position are computed in JS so the knob can
+               fully cover the option area (pill shape) */
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(180deg,#34d399 0%, #059669 100%); /* brand green */
+            border-radius: 9999px;
+            border: 1px solid rgba(5,150,105,0.15);
+            box-shadow: 0 10px 30px rgba(5,150,105,0.18);
+            transition: left 220ms cubic-bezier(.2,.9,.2,1), width 220ms cubic-bezier(.2,.9,.2,1), height 220ms cubic-bezier(.2,.9,.2,1), top 220ms cubic-bezier(.2,.9,.2,1), box-shadow 200ms ease;
+            z-index: 2; /* stays below text (options have z-index:10) */
+            pointer-events: none;
+        }
+        /* Particle elements used for micro-interaction */
+        .particle {
+            position: absolute;
+            border-radius: 9999px;
+            pointer-events: none;
+            will-change: transform, opacity;
+            mix-blend-mode: normal;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+        }
+        /* States based on JS toggling classes */
+        .segmented-control .option.active {
+            color: #ffffff;
+            transform: scale(1.03);
+            font-weight: 700;
+            text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+        }
+        .segmented-control .option:focus-visible {
+            outline: 3px solid rgba(99,102,241,0.16);
+            outline-offset: 3px;
+            border-radius: 9999px;
+        }
+        /* Small variant for compact control with short labels */
+        .segmented-control--small .option {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+        .segmented-control--small .selection-bg {
+            /* smaller visual baseline; actual size computed in JS */
+            height: 34px;
+            transition: left 200ms cubic-bezier(.2,.9,.2,1), width 200ms cubic-bezier(.2,.9,.2,1), height 200ms cubic-bezier(.2,.9,.2,1), top 200ms cubic-bezier(.2,.9,.2,1);
+        }
+
+        /* Matrix Styles */
+        .matrix-header {
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.2s;
+        }
+        .matrix-header:hover {
+        background-color: #f3f4f6;
+        }
+        .matrix-cell {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+        border-left: 1px solid #f3f4f6;
+        vertical-align: middle;
+        }
+
+        /* Status Badges */
+        .status-badge {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 6px;
+        border-radius: 6px;
+        font-weight: 600;
+        width: 100%;
+        min-height: 40px;
+        text-align: center;
+        font-size: 0.7rem;
+        transition: all 0.2s;
+        }
+        .status-primary-envision {
+        background-color: #ecfdf5; /* Green-50 */
+        color: #065f46; /* Green-800 */
+        border: 1px solid #a7f3d0;
+        }
+        .status-oversight-envision {
+        background-color: #f0fdf4; /* Green-50 lighter */
+        color: #047857; /* Green-700 */
+        border: 1px dashed #a7f3d0;
+        }
+        .status-primary-flow {
+        background-color: #eff6ff; /* Blue-50 */
+        color: #1e40af; /* Blue-800 */
+        border: 1px solid #bfdbfe;
+        }
+        .status-oversight-flow {
+        background-color: #f0f9ff; /* Blue-50 lighter */
+        color: #0369a1; /* Blue-700 */
+        border: 1px dashed #bae6fd;
+        }
+        .status-inactive {
+        color: #9ca3af;
+        font-weight: normal;
+        background-color: #f9fafb;
+        }
+
+        /* Mobile Matrix Cards */
+        .mobile-task-card {
+        transition: all 0.3s ease;
+        border-left: 6px solid transparent; 
+        }
+        .mobile-task-card.border-envision { border-left-color: #059669; }
+        .mobile-task-card.border-flow { border-left-color: #0284c7; }
+
+        /* Sticky Tabs for Mobile */
+        .sticky-tabs {
+        position: sticky;
+        top: 64px; /* Height of nav */
+        z-index: 40;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(4px);
+        border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Carousel */
+        .fade-out { opacity: 0; }
+        .fade-in { opacity: 1; }
+        .phase-display { transition: opacity 0.3s ease-in-out; }
+
+        /* Accordion Transition */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 2000px; /* Arbitrary large number */
+            opacity: 1;
+            overflow: hidden;
+        }
+        .accordion-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+        .chevron-icon.rotate-180 {
+            transform: rotate(180deg);
+        }
+
+        /* Toggle highlight pulse animation */
+        @keyframes slow-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        @keyframes color-flow {
+            0% { border-color: #14b8a6; background: rgba(20, 184, 166, 0.08); }
+            25% { border-color: #ec4899; background: rgba(236, 72, 153, 0.08); }
+            50% { border-color: #f97316; background: rgba(249, 115, 22, 0.08); }
+            75% { border-color: #ea580c; background: rgba(234, 88, 12, 0.08); }
+            100% { border-color: #14b8a6; background: rgba(20, 184, 166, 0.08); }
+        }
+        .toggle-highlight {
+            animation: slow-pulse 1s ease infinite;
+        }
+        .toggle-highlight-border {
+            animation: slow-pulse 1s ease infinite, color-flow 4s linear infinite;
+            border-width: 1.5px;
+        }
+        .toggle-highlight-bg {
+            animation: slow-pulse 1s ease infinite, color-flow 4s linear infinite;
+        }
+        .toggle-highlight.hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- Navigation -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm h-16">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+<div class="flex justify-between h-full items-center">
+<div class="flex items-center gap-3">
+    <img src="Flow-PNG-logo.png" alt="Flow Logo" class="h-10">
+    <span class="text-sm font-medium text-gray-500 hidden sm:block">| Development Framework</span>
+</div>
+<div class="hidden md:flex items-center space-x-6">
+<a href="#org-chart" class="text-sm font-medium text-gray-600 hover:text-black transition">Org Chart</a>
+<a href="#approval-workflow" class="text-sm font-medium text-gray-600 hover:text-black transition">Workflow</a>
+<a href="#phase-collaboration" class="text-sm font-medium text-gray-600 hover:text-black transition">Phases</a>
+<a href="#responsibility-matrix" class="text-sm font-medium text-gray-600 hover:text-black transition">Matrix</a>
+</div>
+<!-- Mobile menu button -->
+<div class="flex items-center md:hidden">
+<button type="button" class="mobile-menu-btn inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none">
+<svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+</svg>
+</button>
+</div>
+</div>
+</div>
+<!-- Mobile Menu -->
+<div class="md:hidden hidden bg-white border-b border-gray-100 absolute w-full z-50 shadow-lg" id="mobile-menu">
+<div class="px-4 py-3 space-y-2">
+<a href="#org-chart" class="block py-2 text-base font-medium text-gray-700">Org Chart</a>
+<a href="#approval-workflow" class="block py-2 text-base font-medium text-gray-700">Workflow</a>
+<a href="#phase-collaboration" class="block py-2 text-base font-medium text-gray-700">Collaboration</a>
+<a href="#responsibility-matrix" class="block py-2 text-base font-medium text-gray-700">Responsibility Matrix</a>
+</div>
+</div>
+</nav>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+<!-- Org Chart Section -->
+<section id="org-chart" class="scroll-mt-24">
+<div class="mb-8 text-center">
+<h2 class="text-3xl font-bold text-black mb-2">Organization Chart</h2>
+<p class="text-gray-600">Key stakeholders and roles for project execution.</p>
+</div>
+
+<!-- Founder -->
+<div class="flex justify-center mb-10">
+<div class="leadership-card w-full max-w-lg p-6 rounded-lg shadow-sm">
+<div class="mb-3">
+    <span class="text-[10px] font-bold uppercase bg-black text-white px-3 py-1 rounded-full tracking-wider">Founder</span>
+</div>
+<h4 class="text-2xl font-bold text-black mb-1">Adam Neumann</h4>
+<p class="text-gray-600 text-sm">Visionary direction & overarching mission.</p>
+</div>
+</div>
+
+<!-- Level 2: Executive Team -->
+<div class="relative mb-8">
+    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+    <div class="w-full border-t border-gray-200"></div>
+    </div>
+    <div class="relative flex justify-center">
+    <span class="px-3 py-1 bg-gray-50 text-xs font-bold tracking-wider uppercase text-gray-500 rounded-full">Executive Team</span>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+<div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+    <div class="mb-2"><span class="w-10 h-1 bg-blue-500 block rounded"></span></div>
+    <h4 class="font-bold text-lg text-black">Javier Barrios</h4>
+    <p class="text-xs text-blue-600 font-bold uppercase tracking-wide mb-2">Head of Development</p>
+    <p class="text-sm text-gray-500">Strategy & Master Planning</p>
+</div>
+<div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+    <div class="mb-2"><span class="w-10 h-1 bg-blue-500 block rounded"></span></div>
+    <h4 class="font-bold text-lg text-black">Deepak D. Prabakaran</h4>
+    <p class="text-xs text-blue-600 font-bold uppercase tracking-wide mb-2">Head of Design</p>
+    <p class="text-sm text-gray-500">External Architect & Engineering Lead</p>
+</div>
+<div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+    <div class="mb-2"><span class="w-10 h-1 bg-green-600 block rounded"></span></div>
+    <h4 class="font-bold text-lg text-black">Jeffrey Davis</h4>
+    <p class="text-xs text-green-600 font-bold uppercase tracking-wide mb-2">Bear Dev (Consultant)</p>
+    <p class="text-sm text-gray-500">Strategic Execution Advisor</p>
+</div>
+<div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+    <div class="mb-2"><span class="w-10 h-1 bg-blue-500 block rounded"></span></div>
+    <h4 class="font-bold text-lg text-black">Mark Lapidus</h4>
+    <p class="text-xs text-blue-600 font-bold uppercase tracking-wide mb-2">Head of Real Estate</p>
+    <p class="text-sm text-gray-500">Real Estate Leadership</p>
+</div>
+</div>
+
+<!-- Level 3: Development Team (Under Javier) -->
+<div class="relative mb-8">
+    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+    <div class="w-full border-t border-gray-200"></div>
+    </div>
+    <div class="relative flex justify-center">
+    <span class="px-3 py-1 bg-gray-50 text-xs font-bold tracking-wider uppercase text-gray-500 rounded-full">Development Team</span>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+    <div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+        <h4 class="font-bold text-black">Mickey Swisa</h4>
+        <p class="text-xs text-black font-semibold mb-1">Head of Construction</p>
+        <p class="text-xs text-gray-500">Owner-side Construction Advisor</p>
+    </div>
+    <div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+        <h4 class="font-bold text-black">Ben Feldman</h4>
+        <p class="text-xs text-black font-semibold mb-1">Development Executive</p>
+        <p class="text-xs text-gray-500">Primary Point of Contact (South FL)</p>
+    </div>
+    <div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+        <h4 class="font-bold text-black">Tom Callagee</h4>
+        <p class="text-xs text-black font-semibold mb-1">Real Estate Investments</p>
+        <p class="text-xs text-gray-500">Underwriting & Asset Management</p>
+    </div>
+    <div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+        <h4 class="font-bold text-black">Laura Christovich</h4>
+        <p class="text-xs text-black font-semibold mb-1">Head of Architectural Design</p>
+        <p class="text-xs text-gray-500">Owner-side Product & Design Lead</p>
+    </div>
+    <div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+        <h4 class="font-bold text-black">Guillaume Donon</h4>
+        <p class="text-xs text-black font-semibold mb-1">Project Controller</p>
+        <p class="text-xs text-gray-500">Property-level Accounting</p>
+    </div>
+    <div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm border-l-green-600">
+        <h4 class="font-bold text-black">Envision Construction</h4>
+        <p class="text-xs text-green-600 font-semibold mb-1">Development Manager</p>
+        <p class="text-xs text-gray-500">Delivery, Trade Management, Safety & QC</p>
+    </div>
+</div>
+</section>
+
+<!-- Approval Workflow Section (Modernized) -->
+<section id="approval-workflow" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 scroll-mt-24">
+<div class="flex flex-col items-center justify-center mb-6">
+    <h2 class="text-2xl font-bold text-black text-center">Approval Workflow</h2>
+    <p class="text-gray-500 text-sm mt-1 text-center">Select the operational structure to see the workflow logic.</p>
+</div>
+
+<!-- Modern Toggle with Highlight -->
+<div class="flex justify-center mb-8 items-center gap-4 flex-wrap">
+    <span class="text-base font-normal text-gray-700">Envision acts as </span>
+    <div class="relative inline-block">
+        <!-- Pulsing highlight ring with Flow gradient colors -->
+        <div id="toggleHighlight" class="toggle-highlight toggle-highlight-border absolute inset-0 -m-2 rounded-full border-2 pointer-events-none"></div>
+        <div id="toggleHighlightBg" class="toggle-highlight toggle-highlight-bg absolute inset-0 -m-2 rounded-full pointer-events-none"></div>
+        
+        <div class="segmented-control segmented-control--small" id="segControl">
+            <div class="selection-bg" id="selectionBg"></div>
+            <div class="option" id="opt-no" onclick="setWorkflow(false)">DM</div>
+            <div class="option" id="opt-yes" onclick="setWorkflow(true)">GC</div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white p-8 rounded-xl border border-gray-100 shadow-lg transition-all duration-300 transform" id="workflowCard">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6" id="workflowContent">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- Phase Collaboration Section -->
+<section id="phase-collaboration" class="scroll-mt-24">
+<div class="mb-6 text-center">
+<h2 class="text-2xl font-bold text-black">Phase Collaboration</h2>
+<p class="text-gray-600">Project lifecycle milestones.</p>
+</div>
+
+<div class="relative bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+<div class="phase-display p-8 md:p-12 text-center min-h-[400px] flex flex-col justify-center items-center" id="phaseDisplay">
+<!-- Content injected via JS -->
+</div>
+
+<!-- Navigation Arrows -->
+<button class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-black p-2 rounded-full shadow-md border border-gray-200 backdrop-blur-sm transition" onclick="prevPhase()">
+<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+</button>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-black p-2 rounded-full shadow-md border border-gray-200 backdrop-blur-sm transition" onclick="nextPhase()">
+<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+</button>
+
+<!-- Bottom Indicators -->
+<div class="absolute bottom-6 left-0 right-0 flex justify-center space-x-2" id="phaseIndicators"></div>
+</div>
+</section>
+
+<!-- RESPONSIBILITY MATRIX (UPDATED MOBILE CARDS) -->
+<section id="responsibility-matrix" class="scroll-mt-24">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
+<div>
+<h2 class="text-2xl font-bold text-black">Responsibility Matrix</h2>
+<p class="text-gray-600 text-sm mt-1">Interactive roles & responsibilities breakdown.</p>
+</div>
+
+<!-- Search Bar -->
+<div class="w-full md:w-64 relative">
+    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+    </div>
+    <input type="text" id="matrixSearch" class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-black focus:border-black w-full shadow-sm" placeholder="Search tasks...">
+</div>
+</div>
+
+<!-- MATRIX LEGEND (Common) -->
+<div class="mb-4 bg-white p-3 rounded-lg border border-gray-200 shadow-sm overflow-x-auto">
+<div class="flex items-center gap-4 min-w-max">
+    <div class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded-full bg-envision"></span> <span class="text-xs text-gray-600 font-medium">Envision</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded-full bg-flow"></span> <span class="text-xs text-gray-600 font-medium">Flow</span>
+    </div>
+    <!-- Legend Icons -->
+    <div class="flex items-center gap-1.5 border-l border-gray-200 pl-4">
+        <!-- New Develops Icon: Hammer -->
+        <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+        <span class="text-xs text-gray-600 font-medium">Develops</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+        <!-- Monitor Icon: Eye -->
+        <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+        <span class="text-xs text-gray-600 font-medium">Monitors</span>
+    </div>
+</div>
+</div>
+
+<!-- VIEW 1: DESKTOP TABLE (Hidden on Mobile) -->
+<div class="hidden md:block overflow-hidden border border-gray-200 rounded-lg bg-white shadow-sm">
+<div class="overflow-x-auto" id="desktop-matrix-container">
+<!-- Desktop Table Injected Here -->
+</div>
+</div>
+
+<!-- VIEW 2: MOBILE INTERACTIVE CARDS (Hidden on Desktop) -->
+<div class="md:hidden block">
+<!-- Sticky Phase Selector Tabs -->
+<div class="sticky-tabs -mx-4 px-4 pb-3 pt-2 mb-4 overflow-x-auto no-scrollbar flex space-x-2 bg-gray-50/95 border-b border-gray-200" id="mobile-phase-tabs">
+    <!-- data-phase="conceptual" is active by default -->
+    <button class="phase-tab active whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold bg-black text-white shadow-md transition-all flex-shrink-0" data-phase="conceptual">Conceptual</button>
+    <button class="phase-tab whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 shadow-sm transition-all flex-shrink-0" data-phase="design">Design</button>
+    <button class="phase-tab whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 shadow-sm transition-all flex-shrink-0" data-phase="construction">Construction</button>
+    <button class="phase-tab whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 shadow-sm transition-all flex-shrink-0" data-phase="occupancy">Occupancy</button>
+    <button class="phase-tab whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 shadow-sm transition-all flex-shrink-0" data-phase="facilities">Facilities</button>
+</div>
+
+<!-- Mobile Content Container -->
+<div id="mobile-matrix-container" class="space-y-4 min-h-[400px]">
+    <!-- Mobile Cards Injected Here -->
+</div>
+</div>
+
+</section>
+
+<!-- Deliverables Gallery Section -->
+<section id="deliverables" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 scroll-mt-24">
+<div class="border-b border-gray-100 pb-5 mb-8">
+<h2 class="text-2xl font-bold text-black mb-2">Deliverables</h2>
+<p class="text-gray-600">Outputs, reviews, and signoffs.</p>
+</div>
+<div id="deliverables-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+<!-- Dynamic Content Injected Here -->
+</div>
+</section>
+
+</main>
+
+<footer class="bg-white border-t border-gray-200 mt-12">
+<div class="max-w-7xl mx-auto py-8 px-4 text-center text-sm text-gray-400">
+<p>© 2025 Flow Real Estate | Development Workflow Framework | Version 5.0</p>
+</div>
+</footer>
+
+<script>
+// --- DATA ---
+const projectResponsibilityData = [
+{
+"category": "Authority & Owner Readiness",
+"tasks": [
+{ "id": "AOR-01", "taskName": "Determine size and extent of each team member’s approval authority limits", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": null } },
+{ "id": "AOR-02", "taskName": "Identify communications protocols of which team members communicate information", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "AOR-03", "taskName": "Formalize Success Criteria - KPIs, Budget & Schedule objectives", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } }
+]
+},
+{
+"category": "Systems Integration",
+"tasks": [
+{ "id": "SYS-01", "taskName": "Procore Integration to establish Upstream Owner Visibility", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } },
+{ "id": "SYS-02", "taskName": "Establish Preliminary Success Criteria - Determine Key Milestone Dates in Procore", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } }
+]
+},
+{
+"category": "Reporting",
+"tasks": [
+{ "id": "RPT-01", "taskName": "Formalize Meeting cadence; Owner reporting cadence", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } },
+{ "id": "RPT-02", "taskName": "Meeting Agendas; Meeting Minutes; Action Item Monitoring", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } }
+]
+},
+{
+"category": "Site Analytics",
+"tasks": [
+{ "id": "SITE-01", "taskName": "LiDAR Drone mapping and Imagery of vantage points", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "SITE-02", "taskName": "Geotech / Environmental due diligence (Phase I/II, Borings, Hazmat)", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "SITE-03", "taskName": "ALTA survey, Title/Easements & Air/Development rights review", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "SITE-04", "taskName": "Site Analysis/Investigations; Identify Utilities capacity & Relocation studies", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "SITE-05", "taskName": "Site Recommendations", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": null, "occupancy": null, "facilities": null } }
+]
+},
+{
+"category": "Entitlements & Municipal Relations",
+"tasks": [
+{ "id": "ENT-01", "taskName": "Land Use & Zoning Analysis", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "ENT-02", "taskName": "Establish a municipal relations strategy", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "construction": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "occupancy": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } },
+{ "id": "ENT-03", "taskName": "Determine Agency approval criteria and permit applications", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "ENT-04", "taskName": "Permit intake checklist and phased permit strategy with expediters", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "ENT-05", "taskName": "Applications filing & municipal review coordination", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "ENT-06", "taskName": "Utility service agreements & will-serve letters", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } }
+]
+},
+{
+"category": "Conceptual Studies & Feasibility",
+"tasks": [
+{ "id": "CON-01", "taskName": "Generative Test-Fit & Massing analysis of site", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "CON-02", "taskName": "Labor Market Research; Coordination via Cost Consultants", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "CON-03", "taskName": "ROM Budget / Conceptual Estimate", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": null, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "CON-04", "taskName": "Conceptual Visualizations & 3D Renderings", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "construction": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "occupancy": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } },
+{ "id": "CON-05", "taskName": "Confirm Financial Feasibility; Secure Funding Arrangements", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" } } }
+]
+},
+{
+"category": "Design Coordination",
+"tasks": [
+{ "id": "DES-01", "taskName": "Design Approvals & Owner review coordination", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "DES-02", "taskName": "Coordinate with Architectural & Engineering firms (SD/DD)", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "DES-03", "taskName": "Constructability & Sustainability reviews (SD/DD/CD)", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } },
+{ "id": "DES-04", "taskName": "Target Value Design / Continuous Value Management", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "DES-05", "taskName": "Preconstruction Conferences", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "DES-06", "taskName": "Detailed Estimate (SD/DD)", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "DES-07", "taskName": "Submittals", "phases": { "conceptual": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "DES-08", "taskName": "Approvals timing; Compliance Tracking", "phases": { "conceptual": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "DES-09", "taskName": "Establish Target GMP Estimate for Cost of Work (CD)", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "DES-10", "taskName": "Cost model, Trend log & Budget updates", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "DES-11", "taskName": "Preliminary Digital Twin for AR/VR collaboration", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } }
+]
+},
+{
+"category": "Schedule",
+"tasks": [
+{ "id": "SCH-01", "taskName": "Creation of Work Breakdown Schedule", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "SCH-02", "taskName": "Procurement Coordination; Long-Lead Items", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "SCH-03", "taskName": "4D schedule simulation of construction sequencing of site logistics and material movement", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } },
+{ "id": "SCH-04", "taskName": "Federated model coordination and early clash detection", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": null, "occupancy": null, "facilities": null } }
+]
+},
+{
+"category": "Procurement",
+"tasks": [
+{ "id": "PRO-01", "taskName": "Master Procurement Plan; Responsibility Assignment", "phases": { "conceptual": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "PRO-02", "taskName": "Agreements List; Agreement Development", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "PRO-03", "taskName": "Scope/Bid Packaging; Bidding Documentation", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "PRO-04", "taskName": "Prequalification; Compliance Review", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "PRO-05", "taskName": "EEO/MBE/WBE Coordination", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "PRO-06", "taskName": "Bid Evaluation & Execution", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "PRO-07", "taskName": "Contract Issuance - GMP proposal and Exhibits", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": null } }
+]
+},
+{
+"category": "Insurance & Risk",
+"tasks": [
+{ "id": "INS-01", "taskName": "Analyze Insurance/Bonding Requirements; Need for Insurance Consultants", "phases": { "conceptual": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } },
+{ "id": "INS-02", "taskName": "Insurance Certificates; Tracking", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } }
+]
+},
+{
+"category": "Project Controls",
+"tasks": [
+{ "id": "CTL-01", "taskName": "Project Accounting", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "CTL-02", "taskName": "Cost Code/WBS & Control budget Baseline", "phases": { "conceptual": null, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "CTL-03", "taskName": "Cash Flow Forecasting (Draw Package Coordination)", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "construction": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "occupancy": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } },
+{ "id": "CTL-04", "taskName": "Budget Needs/Constraints", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" } } },
+{ "id": "CTL-05", "taskName": "Cost Allowance/Contingency Audits", "phases": { "conceptual": null, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": null } },
+{ "id": "CTL-06", "taskName": "Progress Payment Reviews; Recommendations", "phases": { "conceptual": null, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": null } },
+{ "id": "CTL-07", "taskName": "Progress Payment Approvals", "phases": { "conceptual": null, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": null } },
+{ "id": "CTL-08", "taskName": "Claims Resolution", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "construction": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "occupancy": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "facilities": null } }
+]
+},
+{
+"category": "Construction Oversight",
+"tasks": [
+{ "id": "OVR-01", "taskName": "Kickoff/partnering & OAC meetings", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": null } },
+{ "id": "OVR-02", "taskName": "Submittals & RFIs", "phases": { "conceptual": null, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "OVR-03", "taskName": "Site Logistics oversight & Mitigation of Impact", "phases": { "conceptual": null, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "OVR-04", "taskName": "Schedule Monitoring/Recovery", "phases": { "conceptual": null, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "OVR-05", "taskName": "Change Order Evaluation & Recommendation", "phases": { "conceptual": null, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": null } }
+]
+},
+{
+"category": "Quality & Safety",
+"tasks": [
+{ "id": "QAS-01", "taskName": "Approval Monitoring", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "QAS-02", "taskName": "Materials Testing", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "QAS-03", "taskName": "Operations Training", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "QAS-04", "taskName": "Performance Compliance", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "QAS-05", "taskName": "Safety Implementation; Safety Plans; Safety Recognition; Safety Responsibilities", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": null, "facilities": null } },
+{ "id": "QAS-06", "taskName": "Systems Handover", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "QAS-07", "taskName": "TQM Guidelines", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "QAS-08", "taskName": "Startup/Testing/Balancing", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "QAS-09", "taskName": "Work Correction", "phases": { "conceptual": null, "design": null, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } }
+]
+},
+{
+"category": "Closeout",
+"tasks": [
+{ "id": "CLO-01", "taskName": "As-Builts", "phases": { "conceptual": null, "design": null, "construction": null, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "CLO-02", "taskName": "TCO/CO Path & Tracking Inspections", "phases": { "conceptual": null, "design": null, "construction": null, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "CLO-03", "taskName": "Substantial Completion", "phases": { "conceptual": null, "design": null, "construction": null, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "CLO-04", "taskName": "Final Completion", "phases": { "conceptual": null, "design": null, "construction": null, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "CLO-05", "taskName": "O&M Manuals", "phases": { "conceptual": null, "design": null, "construction": null, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "CLO-06", "taskName": "Warranty management & Claims coordination", "phases": { "conceptual": null, "design": null, "construction": null, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } }
+]
+},
+{
+"category": "Facilities Management",
+"tasks": [
+{ "id": "FAC-01", "taskName": "Emergency Response Planning", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" } } },
+{ "id": "FAC-02", "taskName": "CAFM Systems", "phases": { "conceptual": null, "design": null, "construction": null, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" } } }
+]
+}
+];
+
+// --- Desktop Matrix Rendering ---
+function renderDesktopMatrix() {
+    const container = document.getElementById('desktop-matrix-container');
+    let html = `
+    <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-100">
+    <tr>
+    <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/4 sticky left-0 bg-gray-100 z-10 border-r border-gray-200">Task / Activity</th>
+    <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Conceptual</th>
+    <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Design</th>
+    <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Construction</th>
+    <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Occupancy</th>
+    <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Facilities</th>
+    </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-100">
+    `;
+
+    projectResponsibilityData.forEach((group, index) => {
+    html += `
+    <tr class="matrix-header bg-gradient-to-r from-teal-50 to-orange-50 hover:from-teal-100 hover:to-orange-100 transition-colors" onclick="toggleMatrixGroup('${index}')">
+    <td colspan="6" class="px-4 py-3 text-sm font-bold text-gray-800 flex items-center cursor-pointer">
+    <span id="icon-${index}" class="mr-2 transform transition-transform text-xs text-teal-600">▼</span>
+    ${group.category}
+    </td>
+    </tr>
+    `;
+
+    group.tasks.forEach(item => {
+    html += `
+    <tr class="matrix-row group-${index} transition-all duration-200 hover:bg-blue-50/30">
+    <td class="px-4 py-3 text-sm font-medium text-gray-900 border-r border-gray-100 sticky left-0 bg-inherit">
+    <span class="text-[10px] text-gray-400 block mb-1 font-mono">${item.id}</span>
+    ${item.taskName}
+    </td>
+    ${renderCell(item.phases.conceptual)}
+    ${renderCell(item.phases.design)}
+    ${renderCell(item.phases.construction)}
+    ${renderCell(item.phases.occupancy)}
+    ${renderCell(item.phases.facilities)}
+    </tr>
+    `;
+    });
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+function renderCell(phaseData) {
+    if (!phaseData) {
+        return `<td class="matrix-cell"><div class="text-center text-gray-300">-</div></td>`;
+    }
+
+    let variant = '';
+    let label = '';
+    let sub = '';
+
+    switch(phaseData.code) {
+        case 'DM/D': variant = 'primary-envision'; label = 'Envision Develops'; sub='(DM/D)'; break;
+        case 'DM/M': variant = 'oversight-envision'; label = 'Envision Monitors'; sub='(DM/M)'; break;
+        case 'O/D': variant = 'primary-flow'; label = 'Flow Develops'; sub='(O/D)'; break;
+        case 'O/M': variant = 'oversight-flow'; label = 'Flow Monitors'; sub='(O/M)'; break;
+        default: variant = 'inactive'; label = phaseData.code;
+    }
+
+    return `
+    <td class="matrix-cell">
+    <div class="status-badge status-${variant}">
+    <span class="block">${label}</span>
+    <span class="text-[9px] opacity-75 mt-0.5">${sub}</span>
+    </div>
+    </td>
+    `;
+}
+
+function toggleMatrixGroup(index) {
+    const rows = document.querySelectorAll(`.group-${index}`);
+    const icon = document.getElementById(`icon-${index}`);
+    let isHidden = rows[0].classList.contains('hidden');
+
+    rows.forEach(row => {
+        if (isHidden) {
+            row.classList.remove('hidden');
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            row.classList.add('hidden');
+            icon.style.transform = 'rotate(-90deg)';
+        }
+    });
+}
+
+// --- Mobile Matrix Rendering (Interactive Cards) ---
+let currentMobilePhase = 'conceptual'; // Default to first phase
+let searchQuery = '';
+
+function renderMobileMatrix() {
+    const container = document.getElementById('mobile-matrix-container');
+    container.innerHTML = '';
+
+    let hasResults = false;
+
+    projectResponsibilityData.forEach((group, index) => {
+        // Filter tasks
+        const visibleTasks = group.tasks.filter(task => {
+            const matchesSearch = task.taskName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                  task.id.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            if (!matchesSearch) return false;
+            
+            // Check if task exists in this phase
+            return task.phases[currentMobilePhase] !== null;
+        });
+
+        if (visibleTasks.length > 0) {
+            hasResults = true;
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm';
+            
+            // Header with Collapse Action
+            groupDiv.innerHTML = `
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center cursor-pointer" onclick="toggleMobileGroup(${index})">
+                    <h3 class="font-bold text-xs uppercase tracking-wide text-gray-600">${group.category}</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] bg-white border border-gray-200 px-1.5 py-0.5 rounded text-gray-500">${visibleTasks.length}</span>
+                        <svg id="chevron-${index}" class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+                <div id="content-${index}" class="accordion-content divide-y divide-gray-100">
+                    ${visibleTasks.map(task => renderMobileTaskCard(task)).join('')}
+                </div>
+            `;
+            container.appendChild(groupDiv);
+        }
+    });
+
+    if (!hasResults) {
+        container.innerHTML = `
+            <div class="text-center py-12 px-4 bg-white rounded-lg border border-dashed border-gray-300">
+                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p class="text-gray-500 font-medium">No tasks found for this phase.</p>
+                <button onclick="clearMobileFilters()" class="mt-3 text-sm text-blue-600 font-bold">Show All</button>
+            </div>
+        `;
+    }
+}
+
+function toggleMobileGroup(index) {
+    const content = document.getElementById(`content-${index}`);
+    const chevron = document.getElementById(`chevron-${index}`);
+    
+    content.classList.toggle('collapsed');
+    chevron.classList.toggle('rotate-180');
+}
+
+function renderMobileTaskCard(task) {
+    const phaseData = task.phases[currentMobilePhase];
+    
+    // Determine visuals based on responsibility
+    const isEnvision = phaseData.primaryParty.includes("Envision") || phaseData.primaryParty === 'Development Manager';
+    const isFlow = phaseData.primaryParty.includes("Owner");
+    
+    // Icons
+    // New Hammer Icon for Develops
+    const hammerIcon = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`;
+    const eyeIcon = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+
+    let borderColor = 'border-gray-200';
+    let bgColor = 'bg-gray-50';
+    let textColor = 'text-gray-600';
+    let partyName = phaseData.primaryParty;
+    let badgeText = '';
+    let actionIcon = '';
+
+    if (isEnvision) {
+        borderColor = 'border-l-4 border-l-envision';
+        textColor = 'text-envision-dark';
+        if (phaseData.action === 'Develops') {
+            bgColor = 'bg-envision-light';
+            badgeText = 'ENVISION'; // Changed per user request
+            actionIcon = hammerIcon; // Changed per user request
+        } else {
+            bgColor = 'bg-white';
+            badgeText = 'ENVISION'; // Changed per user request
+            actionIcon = eyeIcon;
+        }
+    } else if (isFlow) {
+        borderColor = 'border-l-4 border-l-flow';
+        textColor = 'text-flow-dark';
+        if (phaseData.action === 'Develops') {
+            bgColor = 'bg-flow-light';
+            badgeText = 'FLOW'; // Changed per user request
+            actionIcon = hammerIcon; // Changed per user request
+        } else {
+            bgColor = 'bg-white';
+            badgeText = 'FLOW'; // Changed per user request
+            actionIcon = eyeIcon;
+        }
+    }
+
+    return `
+    <div class="p-4 ${borderColor} bg-white hover:bg-gray-50 transition-colors">
+        <div class="flex justify-between items-start mb-2">
+             <div class="flex-1 pr-2">
+                <span class="text-[10px] font-mono text-gray-400 block mb-1">${task.id}</span>
+                <p class="text-sm font-semibold text-gray-900 leading-snug">${task.taskName}</p>
+             </div>
+        </div>
+        
+        <div class="flex items-center mt-3 pt-3 border-t border-gray-100">
+             <div class="flex items-center gap-2">
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold ${textColor}">${partyName}</span>
+                    <span class="text-[10px] text-gray-500 uppercase tracking-wide">${phaseData.action}</span>
+                </div>
+             </div>
+             <div class="ml-auto flex items-center gap-1.5">
+                <span class="text-[10px] font-bold px-2 py-1 rounded ${bgColor} ${textColor} border border-opacity-20 border-current flex items-center gap-1">
+                    ${actionIcon}
+                    ${badgeText}
+                </span>
+             </div>
+        </div>
+    </div>
+    `;
+}
+
+function clearMobileFilters() {
+    searchQuery = '';
+    document.getElementById('matrixSearch').value = '';
+    currentMobilePhase = 'conceptual';
+    updatePhaseTabs();
+    renderMobileMatrix();
+}
+
+// Mobile Tab Event Listeners
+document.querySelectorAll('.phase-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+        currentMobilePhase = e.target.getAttribute('data-phase');
+        updatePhaseTabs();
+        renderMobileMatrix();
+    });
+});
+
+function updatePhaseTabs() {
+    document.querySelectorAll('.phase-tab').forEach(tab => {
+        if(tab.getAttribute('data-phase') === currentMobilePhase) {
+            tab.className = 'phase-tab active whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold bg-black text-white shadow-md transition-all flex-shrink-0';
+        } else {
+            tab.className = 'phase-tab whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 shadow-sm transition-all flex-shrink-0';
+        }
+    });
+}
+
+// Search Event Listener
+document.getElementById('matrixSearch').addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    renderMobileMatrix();
+});
+
+// --- Other Logic (Carousel, Deliverables, Toggle) ---
+
+const phases = [
+{ 
+    title: "1. CONCEPTUAL", 
+    desc: "Visioning, feasibility studies, and initial site analysis.",
+    details: ["Massing & Zoning Studies", "Initial Financial Modeling", "Site Selection & Due Diligence"],
+    icon: `<div class="bg-yellow-100 p-4 rounded-full border border-yellow-200"><svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg></div>` 
+},
+{ 
+    title: "2. DESIGN", 
+    desc: "Schematic design through construction documents.",
+    details: ["Architectural & Engineering Coordination", "Permitting & Entitlements", "GMP Budget Finalization"],
+    icon: `<div class="bg-blue-100 p-4 rounded-full border border-blue-200"><svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></div>` 
+},
+{ 
+    title: "3. CONSTRUCTION", 
+    desc: "Physical execution, logistics, and safety management.",
+    details: ["Site Logistics & Mobilization", "Subcontractor Management", "Quality Control & Safety Oversight"],
+    icon: `<div class="bg-orange-100 p-4 rounded-full border border-orange-200"><svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg></div>` 
+},
+{ 
+    title: "4. OCCUPANCY", 
+    desc: "Handover, commissioning, and move-in.",
+    details: ["TCO/CO Procurement", "Systems Commissioning", "Punch List & Closeout"],
+    icon: `<div class="bg-emerald-100 p-4 rounded-full border border-emerald-200"><svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>` 
+},
+{ 
+    title: "5. FACILITIES", 
+    desc: "Long-term operations and maintenance.",
+    details: ["Preventive Maintenance", "Security Operations", "Asset Management"],
+    icon: `<div class="bg-purple-100 p-4 rounded-full border border-purple-200"><svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></div>` 
+}
+];
+
+let currentPhaseIndex = 0;
+const phaseDisplay = document.getElementById('phaseDisplay');
+const phaseIndicators = document.getElementById('phaseIndicators');
+
+function updatePhase() {
+    phaseDisplay.classList.add('fade-out');
+    phaseDisplay.classList.remove('fade-in');
+
+    setTimeout(() => {
+        const phase = phases[currentPhaseIndex];
+        const detailsList = phase.details.map(d => `<li class="text-sm text-gray-600 mb-1 flex items-center justify-center"><span class="w-1.5 h-1.5 bg-black rounded-full mr-2"></span>${d}</li>`).join('');
+
+        phaseDisplay.innerHTML = `
+            <div class="mb-4 transform hover:scale-105 transition-transform duration-300">
+                ${phase.icon}
+            </div>
+            <h2 class="text-2xl font-bold mb-2 text-black tracking-tight">${phase.title}</h2>
+            <p class="text-base text-gray-600 max-w-sm mb-4 font-medium">${phase.desc}</p>
+            <ul class="text-left bg-white/50 p-4 rounded-lg border border-gray-100 shadow-sm w-full max-w-xs mx-auto">
+                ${detailsList}
+            </ul>
+        `;
+        phaseDisplay.classList.remove('fade-out');
+        phaseDisplay.classList.add('fade-in');
+    }, 300);
+
+    phaseIndicators.innerHTML = phases.map((_, idx) => `
+        <div class="h-1.5 w-8 rounded-full transition-all duration-300 ${idx === currentPhaseIndex ? 'bg-black' : 'bg-gray-200'}"></div>
+    `).join('');
+}
+
+function nextPhase() { currentPhaseIndex = (currentPhaseIndex + 1) % phases.length; updatePhase(); }
+function prevPhase() { currentPhaseIndex = (currentPhaseIndex - 1 + phases.length) % phases.length; updatePhase(); }
+
+const deliverablesGallery = [
+{ id: "DEL-001", title: "Project Success Criteria", phase: "Due D diligence", category: "Authority", status: "Completed" },
+{ id: "DEL-002", title: "Procore Plan", phase: "Due Diligence", category: "Systems", status: "In Progress" },
+{ id: "DEL-009", title: "ROM Budget", phase: "Due Diligence", category: "Feasibility", status: "In Progress" },
+{ id: "DEL-013", title: "Detailed Cost Est.", phase: "Design", category: "Coordination", status: "Scheduled" },
+{ id: "DEL-017", title: "Procurement Plan", phase: "Design", category: "Procurement", status: "Scheduled" },
+{ id: "DEL-020", title: "Payment App", phase: "Execution", category: "Controls", status: "Recurring" }
+];
+
+function renderDeliverables() {
+    const container = document.getElementById('deliverables-grid');
+    const statusColors = {
+        'Completed': 'bg-green-100 text-green-800 border-green-200',
+        'In Progress': 'bg-blue-100 text-blue-800 border-blue-200',
+        'Scheduled': 'bg-purple-100 text-purple-800 border-purple-200',
+        'Recurring': 'bg-indigo-100 text-indigo-800 border-indigo-200'
+    };
+
+    container.innerHTML = deliverablesGallery.map(del => `
+        <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-[10px] font-bold text-gray-400">${del.id}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase border ${statusColors[del.status]}">${del.status}</span>
+            </div>
+            <h4 class="font-bold text-gray-900 text-sm mb-1">${del.title}</h4>
+            <p class="text-xs text-gray-500">${del.category}</p>
+        </div>
+    `).join('');
+}
+
+// Modernized Toggle Logic
+const selectionBg = document.getElementById('selectionBg');
+const optNo = document.getElementById('opt-no');
+const optYes = document.getElementById('opt-yes');
+const workflowContent = document.getElementById('workflowContent');
+const workflowCard = document.getElementById('workflowCard');
+
+        function positionSelection(el) {
+            if (!el) return;
+            const parent = el.parentElement;
+            // compute padding inside the control (matches CSS .segmented-control padding)
+            // smaller padding for the compact control
+            const isSmall = parent.classList.contains('segmented-control--small');
+            const controlPadding = isSmall ? 4 : 6; // px
+            const elRect = el.getBoundingClientRect();
+            const parentRect = parent.getBoundingClientRect();
+
+            // width should cover the option fully (including a small horizontal inset)
+            const width = Math.round(elRect.width + controlPadding);
+            // height should match option height (with a small vertical padding)
+            const height = Math.round(elRect.height + (isSmall ? 4 : 6));
+
+            // left position relative to parent
+            let left = Math.round(el.offsetLeft - Math.round(controlPadding * 0.25));
+            // clamp to parent's inner bounds so the pill doesn't overflow
+            const minLeft = 0;
+            const maxLeft = Math.max(0, parent.clientWidth - width - 0);
+            left = Math.max(minLeft, Math.min(left, maxLeft));
+
+            selectionBg.style.width = `${width}px`;
+            selectionBg.style.height = `${height}px`;
+            selectionBg.style.left = `${left}px`;
+            // center vertically using CSS transform to avoid double-offset issues
+            selectionBg.style.top = `50%`;
+            selectionBg.style.transform = `translateY(-50%)`;
+        }
+
+        function setWorkflow(isGC, isUserInteraction = true) {
+    // Dismiss highlight only on user interaction, not initial load
+    if (isUserInteraction) {
+        const highlight = document.getElementById('toggleHighlight');
+        const highlightBg = document.getElementById('toggleHighlightBg');
+        if (highlight) highlight.classList.add('hidden');
+        if (highlightBg) highlightBg.classList.add('hidden');
+    }
+    
+    if (isGC) {
+        // Yes State
+        optYes.classList.add('active');
+        optNo.classList.remove('active');
+                positionSelection(optYes);
+                try { triggerParticlesAtElement(optYes, 'green'); playClick(); } catch(e){}
+                // style selection pill for green (GC)
+                try {
+                    selectionBg.style.background = 'linear-gradient(180deg,#34d399 0%, #059669 100%)';
+                    selectionBg.style.boxShadow = '0 10px 30px rgba(5,150,105,0.18)';
+                    selectionBg.style.border = '1px solid rgba(5,150,105,0.15)';
+                } catch(e){}
+        
+        workflowContent.innerHTML = `
+            <div class="flex-shrink-0 bg-green-100 p-4 rounded-full">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-2 text-black">Scenario: Envision Construction as GC</h3>
+                <p class="text-gray-600 mb-3">Direct execution of field operations.</p>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Direct Trade Management</li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Safety Oversight</li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Schedule Adherence</li>
+                </ul>
+            </div>
+        `;
+        workflowCard.classList.remove('border-l-4', 'border-l-blue-500');
+        workflowCard.classList.add('border-l-4', 'border-l-green-500');
+    } else {
+        // No State
+        optNo.classList.add('active');
+        optYes.classList.remove('active');
+    positionSelection(optNo);
+    try { triggerParticlesAtElement(optNo, 'blue'); playClick(); } catch(e){}
+    // style selection pill for blue (Dev Manager)
+    try {
+        selectionBg.style.background = 'linear-gradient(180deg,#60a5fa 0%, #0284c7 100%)';
+        selectionBg.style.boxShadow = '0 10px 30px rgba(2,132,199,0.18)';
+        selectionBg.style.border = '1px solid rgba(2,132,199,0.15)';
+    } catch(e){}
+
+        workflowContent.innerHTML = `
+            <div class="flex-shrink-0 bg-blue-100 p-4 rounded-full">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-2 text-black">Scenario: Envision as Development Manager</h3>
+                <p class="text-gray-600 mb-3">Oversight of third-party General Contractor.</p>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Performance Monitoring</li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Budget Control</li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Owner Representation</li>
+                </ul>
+            </div>
+        `;
+        workflowCard.classList.remove('border-l-4', 'border-l-green-500');
+        workflowCard.classList.add('border-l-4', 'border-l-blue-500');
+    }
+}
+
+// Initial state (don't dismiss highlight on page load)
+setWorkflow(false, false);
+
+// Reposition knob on resize so it stays aligned
+window.addEventListener('resize', () => {
+    const active = document.querySelector('.segmented-control .option.active') || optNo;
+    positionSelection(active);
+});
+
+// --- Drag functionality for toggle ---
+let isDragging = false;
+let startX = 0;
+let currentState = false; // false = DM, true = GC
+
+const segControl = document.getElementById('segControl');
+
+function handleDragStart(e) {
+    isDragging = true;
+    startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    segControl.style.cursor = 'grabbing';
+    e.preventDefault();
+}
+
+function handleDragMove(e) {
+    if (!isDragging) return;
+    
+    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    const deltaX = clientX - startX;
+    
+    const rect = segControl.getBoundingClientRect();
+    const threshold = rect.width * 0.3; // 30% of control width to trigger switch
+    
+    // Visual feedback: slightly shift the pill during drag
+    const clampedDelta = Math.max(-threshold, Math.min(threshold, deltaX));
+    const active = document.querySelector('.segmented-control .option.active');
+    if (active) {
+        const normalLeft = parseFloat(selectionBg.style.left);
+        selectionBg.style.left = `${normalLeft + clampedDelta * 0.3}px`;
+    }
+    
+    e.preventDefault();
+}
+
+function handleDragEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    segControl.style.cursor = '';
+    
+    const clientX = e.type.includes('mouse') ? e.clientX : (e.changedTouches ? e.changedTouches[0].clientX : startX);
+    const deltaX = clientX - startX;
+    
+    const rect = segControl.getBoundingClientRect();
+    const threshold = rect.width * 0.25;
+    
+    // Determine if we should switch based on drag distance and direction
+    let shouldSwitch = false;
+    if (Math.abs(deltaX) > threshold) {
+        if (!currentState && deltaX > 0) {
+            // Dragged right from DM -> switch to GC
+            shouldSwitch = true;
+            currentState = true;
+        } else if (currentState && deltaX < 0) {
+            // Dragged left from GC -> switch to DM
+            shouldSwitch = true;
+            currentState = false;
+        }
+    }
+    
+    if (shouldSwitch) {
+        setWorkflow(currentState);
+    } else {
+        // Snap back to original position
+        const active = document.querySelector('.segmented-control .option.active');
+        if (active) positionSelection(active);
+    }
+    
+    e.preventDefault();
+}
+
+// Mouse events
+selectionBg.addEventListener('mousedown', handleDragStart);
+window.addEventListener('mousemove', handleDragMove);
+window.addEventListener('mouseup', handleDragEnd);
+
+// Touch events
+selectionBg.addEventListener('touchstart', handleDragStart, { passive: false });
+window.addEventListener('touchmove', handleDragMove, { passive: false });
+window.addEventListener('touchend', handleDragEnd, { passive: false });
+
+// --- Micro-interactions: particles + soft click ---
+function triggerParticlesAtElement(el, theme) {
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    triggerParticles(cx, cy, theme);
+}
+
+let _audioCtx = null;
+function getAudioCtx() {
+    if (_audioCtx) return _audioCtx;
+    try {
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+        _audioCtx = null;
+    }
+    return _audioCtx;
+}
+
+function playClick() {
+    try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        // Mouse click sound: white noise with very fast envelope + bandpass
+        const bufferSize = ctx.sampleRate * 0.08; // 80ms buffer
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        // Generate white noise
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+        
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        
+        // Bandpass filter to shape click (mid-high frequencies like plastic)
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 3800;
+        filter.Q.value = 1.8;
+        
+        // Fast attack/decay envelope for sharp click
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.15, now + 0.001); // instant attack
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035); // fast decay
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        noise.start(now);
+        noise.stop(now + 0.04);
+    } catch (e) {
+        // silently fail if audio context is unavailable
+    }
+}
+
+function triggerParticles(x, y, theme) {
+    const colors = theme === 'green'
+        ? ['#34d399', '#10b981', '#059669']
+        : ['#60a5fa', '#38bdf8', '#0284c7'];
+
+    const count = 10;
+    for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        const size = 6 + Math.random() * 10;
+        el.className = 'particle';
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+        el.style.left = `${x - size / 2}px`;
+        el.style.top = `${y - size / 2}px`;
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        document.body.appendChild(el);
+
+        const dx = (Math.random() - 0.5) * (60 + Math.random() * 80);
+        const dy = -10 - Math.random() * (40 + Math.random() * 60);
+        const rot = (Math.random() - 0.5) * 720;
+        const dur = 380 + Math.random() * 260;
+
+        const anim = el.animate([
+            { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+            { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity: 0 }
+        ], { duration: dur, easing: 'cubic-bezier(.2,.9,.2,1)' });
+
+        anim.onfinish = () => { try { el.remove(); } catch(e){} };
+    }
+}
+
+// Mobile Menu
+document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+});
+
+// Init
+renderDesktopMatrix();
+renderMobileMatrix();
+updatePhase();
+renderDeliverables();
+
+</script>
+</body>
+</html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="refresh" content="0; url=/flow-workflow_V5.html">
