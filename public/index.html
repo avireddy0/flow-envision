@@ -1,214 +1,92 @@
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Envision Cash Flow</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Flow-Envision Development Workflow</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						flow: {
+							light: '#e0f2fe',
+							DEFAULT: '#0284c7',
+							dark: '#075985',
+						},
+						envision: {
+							light: '#d1fae5',
+							DEFAULT: '#059669',
+							dark: '#064e3b',
+						}
+					}
+				}
+			}
+		}
+	</script>
+	<style>
+		:root {
+			--primary-color: #000000;
+			--bg-color: #f8f9fa;
+			--text-color: #333;
+		}
 
-        // --- CONFIGURATION ---
-        const firebaseConfig = {
-  apiKey: "AIzaSyCTL6KFc45icS6fuZiQ9XpBpHU8SJbKtOo",
-  authDomain: "cash-flow-app-46893.firebaseapp.com",
-  projectId: "cash-flow-app-46893",
-  storageBucket: "cash-flow-app-46893.appspot.com",
-  messagingSenderId: "941640320942",
-  appId: "1:941640320942:web:740e0f2560bbf0d8dfaa3f"
-};
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyvPFMTM_5M2ahhS29Jf8lKZD5Xk6VJ_fv7ihzdKpYnoYfeVJG-qzPEmY6lmoygClfP/exec";
-        // ---------------------
+		body {
+		background-color: var(--bg-color);
+		color: var(--text-color);
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+		}
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+		/* Smooth scrolling */
+		html {
+		scroll-behavior: smooth;
+		}
 
-        // State
-        let rawData = [];
-        let weeks = [];
+		/* Custom Scrollbar */
+		::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+		}
+		::-webkit-scrollbar-track {
+		background: #f1f1f1;
+		}
+		::-webkit-scrollbar-thumb {
+		background: #cbd5e1;
+		border-radius: 4px;
+		}
+		::-webkit-scrollbar-thumb:hover {
+		background: #94a3b8;
+		}
 
-        async function init() {
-            const querySnapshot = await getDocs(collection(db, "CashFlow"));
-            rawData = [];
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>Envision Cash Flow</title>
-                <script src="https://cdn.tailwindcss.com"></script>
-                <script type="module">
-                    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-                    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+		/* Org Chart Cards */
+		.org-card {
+		border-left: 4px solid var(--primary-color);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		/* Centering styles added */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		}
+		.org-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+		}
 
-                    // --- CONFIGURATION ---
-                    const firebaseConfig = {
-              apiKey: "AIzaSyCTL6KFc45icS6fuZiQ9XpBpHU8SJbKtOo",
-              authDomain: "cash-flow-app-46893.firebaseapp.com",
-              projectId: "cash-flow-app-46893",
-              storageBucket: "cash-flow-app-46893.appspot.com",
-              messagingSenderId: "941640320942",
-              appId: "1:941640320942:web:740e0f2560bbf0d8dfaa3f"
-            };
-                    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyvPFMTM_5M2ahhS29Jf8lKZD5Xk6VJ_fv7ihzdKpYnoYfeVJG-qzPEmY6lmoygClfP/exec";
-                    // ---------------------
+		.leadership-card {
+		border-left: 4px solid #000;
+		background: linear-gradient(to bottom, #ffffff, #f9fafb);
+		border: 1px solid #e5e7eb;
+		border-top-width: 6px; /* Changed to top for centered look */
+		border-left-width: 1px;
+		/* Centering styles added */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		}
 
-                    const app = initializeApp(firebaseConfig);
-                    const db = getFirestore(app);
-
-                    // State
-                    let rawData = [];
-                    let weeks = [];
-
-                    async function init() {
-                        const querySnapshot = await getDocs(collection(db, "CashFlow"));
-                        rawData = [];
-                        querySnapshot.forEach((doc) => rawData.push(doc.data()));
-            
-                        // Get unique weeks and sort (ISO date strings sort correctly)
-                        weeks = [...new Set(rawData.map(d => d.Week_Ending))].sort();
-                        renderTable();
-                    }
-
-                    // Calculation Helper
-                    function sum(week, section, cat = null) {
-                        return rawData
-                            .filter(d => d.Week_Ending === week && d.Section === section)
-                            .filter(d => cat ? d.Category === cat : true)
-                            .reduce((acc, curr) => acc + Number(curr.Amount || 0), 0);
-                    }
-
-                    function fmt(num) {
-                        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
-                    }
-
-                    function renderTable() {
-                        const tbody = document.getElementById('cf-body');
-                        let html = "";
-
-                        // --- SECTION A: OPERATING ACTIVITIES ---
-                        html += `<tr class="bg-gray-100 font-bold"><td colspan="${weeks.length + 1}" class="p-2 pl-4">CASH FLOWS FROM OPERATING ACTIVITIES</td></tr>`;
-            
-                        // Row 1: Receipts
-                        html += `<tr><td class="p-2 border-b">(+) Project Receipts</td>`;
-                        weeks.forEach(w => html += `<td class="p-2 text-right border-b text-green-600 border-l">${fmt(sum(w, 'Operating', 'Receipts'))}</td>`);
-                        html += `</tr>`;
-
-                        // Row 2: General Requirements / OpEx / Payroll (aggregate)
-                        html += `<tr><td class="p-2 border-b">(-) Gen Reqs & OpEx & Payroll</td>`;
-                        weeks.forEach(w => {
-                            const val = sum(w, 'Operating', 'Gen Req') + sum(w, 'Operating', 'OpEx') + sum(w, 'Operating', 'Payroll');
-                            html += `<td class="p-2 text-right border-b text-red-500 border-l">${fmt(val)}</td>`
-                        });
-                        html += `</tr>`;
-
-                        // Row 3: Quick Pay Outflows (The Project Burn)
-                        html += `<tr><td class="p-2 border-b">(-) Quick Pay Disbursements</td>`;
-                        weeks.forEach(w => html += `<td class="p-2 text-right border-b text-red-500 border-l">${fmt(sum(w, 'Operating', 'Quick Pay Outflow'))}</td>`);
-                        html += `</tr>`;
-
-                        // Net Operating
-                        html += `<tr class="bg-blue-50 font-bold"><td class="p-2 border-b">Net Operating Cash</td>`;
-                        weeks.forEach(w => {
-                            const net = sum(w, 'Operating');
-                            html += `<td class="p-2 text-right border-b border-l ${net < 0 ? 'text-red-600' : 'text-blue-800'}">${fmt(net)}</td>`
-                        });
-                        html += `</tr>`;
-
-                        // --- SECTION B: FINANCING ACTIVITIES ---
-                        html += `<tr class="bg-gray-100 font-bold"><td colspan="${weeks.length + 1}" class="p-2 pl-4 mt-4">CASH FLOWS FROM FINANCING ACTIVITIES</td></tr>`;
-
-                        html += `<tr><td class="p-2 border-b">(+) Financing Inflow (Viva/Notes)</td>`;
-                        weeks.forEach(w => html += `<td class="p-2 text-right border-b text-blue-600 border-l">${fmt(sum(w, 'Financing', 'Inflow'))}</td>`);
-                        html += `</tr>`;
-
-                        html += `<tr><td class="p-2 border-b">(-) Debt Repayment (Viva/Brex)</td>`;
-                        weeks.forEach(w => html += `<td class="p-2 text-right border-b text-red-600 border-l">${fmt(sum(w, 'Financing', 'Outflow'))}</td>`);
-                        html += `</tr>`;
-
-                        // Net Financing
-                        html += `<tr class="bg-blue-50 font-bold"><td class="p-2 border-b">Net Financing Cash</td>`;
-                        weeks.forEach(w => {
-                            const net = sum(w, 'Financing');
-                            html += `<td class="p-2 text-right border-b border-l ${net < 0 ? 'text-red-600' : 'text-blue-800'}">${fmt(net)}</td>`
-                        });
-                        html += `</tr>`;
-
-                        // --- NET CHANGE ---
-                        html += `<tr class="bg-slate-800 text-white font-bold"><td class="p-3">NET CHANGE IN CASH</td>`;
-                        weeks.forEach(w => {
-                            const total = sum(w, 'Operating') + sum(w, 'Financing');
-                            html += `<td class="p-3 text-right border-l border-slate-600">${fmt(total)}</td>`
-                        });
-                        html += `</tr>`;
-
-                        // Render Header
-                        const thead = document.getElementById('cf-head');
-                        let headHtml = `<tr><th class="p-3 text-left w-64 bg-slate-800 text-white sticky left-0">Line Item</th>`;
-                        weeks.forEach(w => headHtml += `<th class="p-3 text-right min-w-[120px] bg-slate-800 text-white border-l border-slate-600">${w}</th>`);
-                        thead.innerHTML = headHtml + `</tr>`;
-            
-                        tbody.innerHTML = html;
-                    }
-
-                    // --- WRITE FUNCTION ---
-                    window.saveForecast = async () => {
-                        const btn = document.getElementById('saveBtn');
-                        btn.innerText = "Saving...";
-            
-                        const payload = {
-                            Entry_ID: "FCST_" + Date.now(),
-                            Week_Ending: document.getElementById('in_date').value,
-                            Section: document.getElementById('in_sec').value,
-                            Category: document.getElementById('in_cat').value,
-                            Detail: document.getElementById('in_det').value,
-                            Amount: document.getElementById('in_amt').value
-                        };
-
-                        // Use no-cors for Google Apps Script POST; response won't be readable.
-                        await fetch(GOOGLE_SCRIPT_URL, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-
-                        btn.innerText = "Saved!";
-                        setTimeout(() => {
-                            btn.innerText = "Save Forecast";
-                            init(); // Refresh data
-                        }, 1500);
-                    }
-
-                    window.onload = init;
-                </script>
-            </head>
-            <body class="bg-slate-50 p-8">
-                <div class="max-w-full mx-auto">
-                    <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-3xl font-bold text-slate-800">Statement of Cash Flows</h1>
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        }
-        .org-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .leadership-card {
-        border-left: 4px solid #000;
-        background: linear-gradient(to bottom, #ffffff, #f9fafb);
-        border: 1px solid #e5e7eb;
-        border-top-width: 6px; /* Changed to top for centered look */
-        border-left-width: 1px;
-        /* Centering styles added */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        }
-
-        /* Modern Segmented Control */
+		/* Modern Segmented Control */
         .segmented-control {
             background: linear-gradient(90deg, #eef2ff 0%, #fff7ed 100%);
             padding: 6px;
@@ -286,131 +164,131 @@
             transition: left 200ms cubic-bezier(.2,.9,.2,1), width 200ms cubic-bezier(.2,.9,.2,1), height 200ms cubic-bezier(.2,.9,.2,1), top 200ms cubic-bezier(.2,.9,.2,1);
         }
 
-        /* Matrix Styles */
-        .matrix-header {
-        cursor: pointer;
-        user-select: none;
-        transition: background-color 0.2s;
-        }
-        .matrix-header:hover {
-        background-color: #f3f4f6;
-        }
-        .matrix-cell {
-        font-size: 0.75rem;
-        padding: 0.5rem;
-        border-left: 1px solid #f3f4f6;
-        vertical-align: middle;
-        }
+		/* Matrix Styles */
+		.matrix-header {
+		cursor: pointer;
+		user-select: none;
+		transition: background-color 0.2s;
+		}
+		.matrix-header:hover {
+		background-color: #f3f4f6;
+		}
+		.matrix-cell {
+		font-size: 0.75rem;
+		padding: 0.5rem;
+		border-left: 1px solid #f3f4f6;
+		vertical-align: middle;
+		}
 
-        /* Status Badges */
-        .status-badge {
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 4px 6px;
-        border-radius: 6px;
-        font-weight: 600;
-        width: 100%;
-        min-height: 40px;
-        text-align: center;
-        font-size: 0.7rem;
-        transition: all 0.2s;
-        }
-        .status-primary-envision {
-        background-color: #ecfdf5; /* Green-50 */
-        color: #065f46; /* Green-800 */
-        border: 1px solid #a7f3d0;
-        }
-        .status-oversight-envision {
-        background-color: #f0fdf4; /* Green-50 lighter */
-        color: #047857; /* Green-700 */
-        border: 1px dashed #a7f3d0;
-        }
-        .status-primary-flow {
-        background-color: #eff6ff; /* Blue-50 */
-        color: #1e40af; /* Blue-800 */
-        border: 1px solid #bfdbfe;
-        }
-        .status-oversight-flow {
-        background-color: #f0f9ff; /* Blue-50 lighter */
-        color: #0369a1; /* Blue-700 */
-        border: 1px dashed #bae6fd;
-        }
-        .status-inactive {
-        color: #9ca3af;
-        font-weight: normal;
-        background-color: #f9fafb;
-        }
+		/* Status Badges */
+		.status-badge {
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 4px 6px;
+		border-radius: 6px;
+		font-weight: 600;
+		width: 100%;
+		min-height: 40px;
+		text-align: center;
+		font-size: 0.7rem;
+		transition: all 0.2s;
+		}
+		.status-primary-envision {
+		background-color: #ecfdf5; /* Green-50 */
+		color: #065f46; /* Green-800 */
+		border: 1px solid #a7f3d0;
+		}
+		.status-oversight-envision {
+		background-color: #f0fdf4; /* Green-50 lighter */
+		color: #047857; /* Green-700 */
+		border: 1px dashed #a7f3d0;
+		}
+		.status-primary-flow {
+		background-color: #eff6ff; /* Blue-50 */
+		color: #1e40af; /* Blue-800 */
+		border: 1px solid #bfdbfe;
+		}
+		.status-oversight-flow {
+		background-color: #f0f9ff; /* Blue-50 lighter */
+		color: #0369a1; /* Blue-700 */
+		border: 1px dashed #bae6fd;
+		}
+		.status-inactive {
+		color: #9ca3af;
+		font-weight: normal;
+		background-color: #f9fafb;
+		}
 
-        /* Mobile Matrix Cards */
-        .mobile-task-card {
-        transition: all 0.3s ease;
-        border-left: 6px solid transparent; 
-        }
-        .mobile-task-card.border-envision { border-left-color: #059669; }
-        .mobile-task-card.border-flow { border-left-color: #0284c7; }
+		/* Mobile Matrix Cards */
+		.mobile-task-card {
+		transition: all 0.3s ease;
+		border-left: 6px solid transparent; 
+		}
+		.mobile-task-card.border-envision { border-left-color: #059669; }
+		.mobile-task-card.border-flow { border-left-color: #0284c7; }
 
-        /* Sticky Tabs for Mobile */
-        .sticky-tabs {
-        position: sticky;
-        top: 64px; /* Height of nav */
-        z-index: 40;
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(4px);
-        border-bottom: 1px solid #e5e7eb;
-        }
+		/* Sticky Tabs for Mobile */
+		.sticky-tabs {
+		position: sticky;
+		top: 64px; /* Height of nav */
+		z-index: 40;
+		background: rgba(255,255,255,0.95);
+		backdrop-filter: blur(4px);
+		border-bottom: 1px solid #e5e7eb;
+		}
 
-        /* Carousel */
-        .fade-out { opacity: 0; }
-        .fade-in { opacity: 1; }
-        .phase-display { transition: opacity 0.3s ease-in-out; }
+		/* Carousel */
+		.fade-out { opacity: 0; }
+		.fade-in { opacity: 1; }
+		.phase-display { transition: opacity 0.3s ease-in-out; }
 
-        /* Accordion Transition */
-        .accordion-content {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            max-height: 2000px; /* Arbitrary large number */
-            opacity: 1;
-            overflow: hidden;
-        }
-        .accordion-content.collapsed {
-            max-height: 0;
-            opacity: 0;
-        }
-        .chevron-icon {
-            transition: transform 0.3s ease;
-        }
-        .chevron-icon.rotate-180 {
-            transform: rotate(180deg);
-        }
+		/* Accordion Transition */
+		.accordion-content {
+		    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+		    max-height: 2000px; /* Arbitrary large number */
+		    opacity: 1;
+		    overflow: hidden;
+		}
+		.accordion-content.collapsed {
+		    max-height: 0;
+		    opacity: 0;
+		}
+		.chevron-icon {
+		    transition: transform 0.3s ease;
+		}
+		.chevron-icon.rotate-180 {
+		    transform: rotate(180deg);
+		}
 
-        /* Toggle highlight pulse animation */
-        @keyframes slow-pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-        }
-        @keyframes color-flow {
-            0% { border-color: #14b8a6; background: rgba(20, 184, 166, 0.08); }
-            25% { border-color: #ec4899; background: rgba(236, 72, 153, 0.08); }
-            50% { border-color: #f97316; background: rgba(249, 115, 22, 0.08); }
-            75% { border-color: #ea580c; background: rgba(234, 88, 12, 0.08); }
-            100% { border-color: #14b8a6; background: rgba(20, 184, 166, 0.08); }
-        }
-        .toggle-highlight {
-            animation: slow-pulse 1s ease infinite;
-        }
-        .toggle-highlight-border {
-            animation: slow-pulse 1s ease infinite, color-flow 4s linear infinite;
-            border-width: 1.5px;
-        }
-        .toggle-highlight-bg {
-            animation: slow-pulse 1s ease infinite, color-flow 4s linear infinite;
-        }
-        .toggle-highlight.hidden {
-            display: none;
-        }
+		/* Toggle highlight pulse animation */
+		@keyframes slow-pulse {
+		    0%, 100% { opacity: 0.3; }
+		    50% { opacity: 0.6; }
+		}
+		@keyframes color-flow {
+		    0% { border-color: #14b8a6; background: rgba(20, 184, 166, 0.08); }
+		    25% { border-color: #ec4899; background: rgba(236, 72, 153, 0.08); }
+		    50% { border-color: #f97316; background: rgba(249, 115, 22, 0.08); }
+		    75% { border-color: #ea580c; background: rgba(234, 88, 12, 0.08); }
+		    100% { border-color: #14b8a6; background: rgba(20, 184, 166, 0.08); }
+		}
+		.toggle-highlight {
+		    animation: slow-pulse 1s ease infinite;
+		}
+		.toggle-highlight-border {
+		    animation: slow-pulse 1s ease infinite, color-flow 4s linear infinite;
+		    border-width: 1.5px;
+		}
+		.toggle-highlight-bg {
+		    animation: slow-pulse 1s ease infinite, color-flow 4s linear infinite;
+		}
+		.toggle-highlight.hidden {
+		    display: none;
+		}
 
-    </style>
+	</style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
@@ -480,12 +358,13 @@
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-<div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+<a href="https://open-webui-210087613384.us-central1.run.app/" class="org-card bg-white p-6 rounded-lg border border-blue-300 shadow-sm block cursor-pointer hover:shadow-md hover:border-blue-500 transition-all">
     <div class="mb-2"><span class="w-10 h-1 bg-blue-500 block rounded"></span></div>
     <h4 class="font-bold text-lg text-black">Javier Barrios</h4>
     <p class="text-xs text-blue-600 font-bold uppercase tracking-wide mb-2">Head of Development</p>
     <p class="text-sm text-gray-500">Strategy & Master Planning</p>
-</div>
+    <p class="text-xs text-blue-400 mt-2">Click to open workspace →</p>
+</a>
 <div class="org-card bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
     <div class="mb-2"><span class="w-10 h-1 bg-blue-500 block rounded"></span></div>
     <h4 class="font-bold text-lg text-black">Deepak D. Prabakaran</h4>
@@ -782,7 +661,7 @@ const projectResponsibilityData = [
 { "id": "PRO-03", "taskName": "Scope/Bid Packaging; Bidding Documentation", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
 { "id": "PRO-04", "taskName": "Prequalification; Compliance Review", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
 { "id": "PRO-05", "taskName": "EEO/MBE/WBE Coordination", "phases": { "conceptual": { "code": "O/D", "primaryParty": "Owner", "action": "Develops" }, "design": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
-{ "id": "PRO-06", "taskName": "Bid Evaluation & Execution", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": null } },
+{ "id": "PRO-06", "taskName": "Bid Evaluation & Execution", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "occupancy": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" }, "facilities": { "code": "DM/M", "primaryParty": "Development Manager", "action": "Monitors" } } },
 { "id": "PRO-07", "taskName": "Contract Issuance - GMP proposal and Exhibits", "phases": { "conceptual": { "code": "O/M", "primaryParty": "Owner", "action": "Monitors" }, "design": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "construction": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "occupancy": { "code": "DM/D", "primaryParty": "Development Manager", "action": "Develops" }, "facilities": null } }
 ]
 },
@@ -1182,7 +1061,7 @@ function nextPhase() { currentPhaseIndex = (currentPhaseIndex + 1) % phases.leng
 function prevPhase() { currentPhaseIndex = (currentPhaseIndex - 1 + phases.length) % phases.length; updatePhase(); }
 
 const deliverablesGallery = [
-{ id: "DEL-001", title: "Project Success Criteria", phase: "Due D diligence", category: "Authority", status: "Completed" },
+{ id: "DEL-001", title: "Project Success Criteria", phase: "Due Diligence", category: "Authority", status: "Completed" },
 { id: "DEL-002", title: "Procore Plan", phase: "Due Diligence", category: "Systems", status: "In Progress" },
 { id: "DEL-009", title: "ROM Budget", phase: "Due Diligence", category: "Feasibility", status: "In Progress" },
 { id: "DEL-013", title: "Detailed Cost Est.", phase: "Design", category: "Coordination", status: "Scheduled" },
@@ -1513,16 +1392,4 @@ renderDeliverables();
 
 </script>
 </body>
-</html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=/flow-workflow_V5.html">
-    <link rel="canonical" href="/flow-workflow_V5.html">
-    <meta name="robots" content="noindex">
-    <title>Redirecting…</title>
-  </head>
-  <body>
-    Redirecting to <a href="/flow-workflow_V5.html">flow-workflow_V5.html</a>.
-  </body>
 </html>
